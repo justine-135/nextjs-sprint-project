@@ -16,3 +16,8 @@ export interface ITabColumns {
   todos?: ITodos[];
   count: number;
 }
+
+export interface SeedTabColumns {
+  id: number;
+  title: string;
+}

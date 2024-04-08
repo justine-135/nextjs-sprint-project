@@ -1,7 +1,12 @@
 import { ITodos } from "@/app/lib/definitions/tab-column";
 import { Badge } from "@/components/ui/badge";
 import { OptionsBtn } from "@/app/ui/common/options-btn";
-import { CircleDotDashedIcon, Edit2Icon, LucideTrash } from "lucide-react";
+import {
+  CircleDotDashedIcon,
+  Edit2Icon,
+  EllipsisVerticalIcon,
+  LucideTrash,
+} from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -22,7 +27,7 @@ const ActionButton = () => {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger>
-        <OptionsBtn />
+        <EllipsisVerticalIcon size={16} />
       </DropdownMenuTrigger>
       <DropdownMenuContent>
         <DropdownMenuLabel>Options</DropdownMenuLabel>

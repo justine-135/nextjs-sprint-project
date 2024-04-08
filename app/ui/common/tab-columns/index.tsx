@@ -7,7 +7,7 @@ export const TabColumns = ({ data }: { data: ITabColumns[] }) => {
     <ul className="flex gap-6">
       {data?.map((col) => {
         return (
-          <li key={col.id}>
+          <li className="flex-shrink-0" key={col.id}>
             <TabColumn data={col} />
           </li>
         );

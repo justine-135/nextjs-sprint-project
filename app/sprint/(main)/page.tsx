@@ -1,9 +1,5 @@
-import { TabColumnData } from "@/app/ui/sprint/main/tab-column-data";
+import { MainPage } from "@/app/ui/sprint/main/page";
 
 export default function Sprint() {
-  return (
-    <>
-      <TabColumnData />
-    </>
-  );
+  return <MainPage />;
 }
