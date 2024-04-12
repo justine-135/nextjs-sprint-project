@@ -1,6 +1,6 @@
 "use client";
 
-import { SprintLinks } from "@/app/lib/data";
+import { SprintLinks } from "@/app/lib/routes";
 import clsx from "clsx";
 import Link from "next/link";
 import { usePathname } from "next/navigation";

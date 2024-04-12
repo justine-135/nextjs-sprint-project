@@ -4,6 +4,12 @@ export interface ITags {
   text: string;
 }
 
+export interface ITodoTags {
+  id: number;
+  todo_id: number;
+  tag_id: number;
+}
+
 export interface ITodos {
   id: number;
   title: string;

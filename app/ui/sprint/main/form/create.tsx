@@ -1,6 +1,5 @@
 import { useForm } from "react-hook-form";
-import Modal from "../../../common/modal";
-import { useModal } from "../../../common/modal/ModalContext";
+import { Modal } from "../../../common/modal";
 import {
   Form,
   FormControl,
@@ -18,7 +17,6 @@ import {
   SelectContent,
   SelectItem,
 } from "@/components/ui/select";
-import { tags } from "@/app/lib/data";
 import { useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { TAG_SEPARATOR } from "@/app/lib/constants";
@@ -26,7 +24,8 @@ import { X } from "lucide-react";
 import { createTodo } from "@/app/lib/actions";
 
 export const CreateForm = () => {
-  const { isVisible, tabId, closeForm } = useModal();
+  // const { isVisible, tabId, closeForm } = useModal();
+
   const form = useForm({
     defaultValues: {
       title: "",
@@ -52,13 +51,15 @@ export const CreateForm = () => {
       return Number(firstCharacter);
     });
 
-    const payload = { ...form.getValues(), tagIds, tabId };
+    // const payload = { ...form.getValues(), tagIds, tabId };
 
-    await createTodo(payload);
+    // await createTodo(payload);
   };
 
+  const { ModalComponent } = Modal();
+
   return (
-    <Modal title="Create todo" visible={isVisible} onClose={closeForm}>
+    <ModalComponent title="Create todo">
       <Form {...form}>
         <form
           onSubmit={(e) => {
@@ -113,7 +114,7 @@ export const CreateForm = () => {
               <Select onValueChange={onTagSelect} defaultValue="Tag 1">
                 <SelectTrigger className="w-auto">Select tag</SelectTrigger>
                 <SelectContent>
-                  <ul>
+                  {/* <ul>
                     {tags?.map((tag) => {
                       return (
                         <li key={tag?.id}>
@@ -125,7 +126,7 @@ export const CreateForm = () => {
                         </li>
                       );
                     })}
-                  </ul>
+                  </ul> */}
                 </SelectContent>
               </Select>
             </div>
@@ -138,6 +139,6 @@ export const CreateForm = () => {
           </div>
         </form>
       </Form>
-    </Modal>
+    </ModalComponent>
   );
 };

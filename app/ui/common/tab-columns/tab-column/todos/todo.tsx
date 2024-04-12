@@ -17,6 +17,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 import clsx from "clsx";
+import { getTags, getTodoTags } from "@/app/lib/data";
 
 const actions = [
   { name: "Edit", icon: <Edit2Icon size={13} /> },
@@ -57,7 +58,15 @@ const ActionButton = () => {
   );
 };
 
-export const Todo = ({ todo }: { todo: ITodos }) => {
+const TagComponent = async ({ id }: { id: number }) => {
+  const tagData = await getTags(id);
+
+  return <Badge>{tagData?.text}</Badge>;
+};
+
+export const Todo = async ({ todo }: { todo: ITodos }) => {
+  const todoData = await getTodoTags(todo.id);
+
   return (
     <div className="p-small border-default rounded-md">
       <div className="flex items-center justify-between">
@@ -70,10 +79,10 @@ export const Todo = ({ todo }: { todo: ITodos }) => {
       </div>
       <p className="my-small">{todo?.title}</p>
       <ul className="flex gap-1">
-        {todo?.tags?.map((tag) => {
+        {todoData?.map((tag) => {
           return (
             <li key={tag?.id}>
-              <Badge>{tag?.text}</Badge>
+              <TagComponent id={tag?.id} />
             </li>
           );
         })}

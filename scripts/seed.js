@@ -1,5 +1,45 @@
 const { db } = require("@vercel/postgres");
-const { TabColumns, Todos, Tags } = require("../app/lib/placeholder-data.js");
+const {
+  TabColumns,
+  Todos,
+  Tags,
+  TodoTags,
+} = require("../app/lib/placeholder-data.js");
+
+async function seedTags(client) {
+  try {
+    await client.sql`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`;
+    const createTable = await client.sql`
+        CREATE TABLE IF NOT EXISTS tags (
+          id SERIAL PRIMARY KEY,
+          type INT,
+          text VARCHAR(255) NOT NULL
+        );
+      `;
+
+    console.log(`Created "tags" table`);
+
+    const insertTags = await Promise.all(
+      Tags.map(async (tab) => {
+        return client.sql`
+          INSERT INTO tags (type, text)
+          VALUES (${tab.type}, ${tab.text})
+          ON CONFLICT (id) DO NOTHING;
+        `;
+      })
+    );
+
+    console.log(`Seeded ${insertTags.length} tags`);
+
+    return {
+      createTable,
+      tabColumns: insertTags,
+    };
+  } catch (error) {
+    console.error("Error seeding tab columns:", error);
+    throw error;
+  }
+}
 
 async function seedTab(client) {
   try {
@@ -44,7 +84,7 @@ async function seedTodos(client) {
     const createTable = await client.sql`
         CREATE TABLE IF NOT EXISTS todos (
           id SERIAL PRIMARY KEY,
-          tab_id  INT REFERENCES tab_columns(id),
+          tab_id INTEGER NOT NULL REFERENCES tab_columns (id) ON DELETE CASCADE,
           title VARCHAR(255) NOT NULL,
           content VARCHAR(255) NOT NULL
         );
@@ -70,44 +110,44 @@ async function seedTodos(client) {
       tabColumns: insertTodos,
     };
   } catch (error) {
-    console.error("Error seeding tab columns:", error);
+    console.error("Error seeding todos:", error);
     throw error;
   }
 }
 
-async function seedTags(client) {
+async function seedTodoTags(client) {
   try {
     await client.sql`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`;
     // Create the "users" table if it doesn't exist
     const createTable = await client.sql`
-        CREATE TABLE IF NOT EXISTS tags (
-          id SERIAL PRIMARY KEY,
-          type INT,
-          text VARCHAR(255) NOT NULL
-        );
+    CREATE TABLE IF NOT EXISTS todo_tag (
+      id SERIAL PRIMARY KEY,
+      todo_id INTEGER NOT NULL REFERENCES todos (id) ON DELETE CASCADE,
+      tag_id INTEGER NOT NULL REFERENCES tags (id) ON DELETE CASCADE
+  );  
       `;
 
-    console.log(`Created "tags" table`);
+    console.log(`Created "todo tags" table`);
 
     // Insert data into the "users" table
-    const insertTags = await Promise.all(
-      Tags.map(async (tab) => {
+    const insertTodoTag = await Promise.all(
+      TodoTags.map(async (tab) => {
         return client.sql`
-          INSERT INTO tags (type, text)
-          VALUES (${tab.type}, ${tab.text})
+          INSERT INTO todo_tag (todo_id, tag_id)
+          VALUES (${tab.todo_id}, ${tab.tag_id})
           ON CONFLICT (id) DO NOTHING;
         `;
       })
     );
 
-    console.log(`Seeded ${insertTags.length} columns`);
+    console.log(`Seeded ${insertTodoTag.length} columns`);
 
     return {
       createTable,
-      tabColumns: insertTags,
+      tabColumns: insertTodoTag,
     };
   } catch (error) {
-    console.error("Error seeding tab columns:", error);
+    console.error("Error seeding todo tag:", error);
     throw error;
   }
 }
@@ -115,9 +155,10 @@ async function seedTags(client) {
 async function main() {
   const client = await db.connect();
 
+  await seedTags(client);
   await seedTab(client);
   await seedTodos(client);
-  await seedTags(client);
+  await seedTodoTags(client);
 
   await client.end();
 }

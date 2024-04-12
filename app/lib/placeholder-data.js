@@ -1,3 +1,22 @@
+const Tags = [
+  {
+    type: 1,
+    text: "High",
+  },
+  {
+    type: 2,
+    text: "Frontend",
+  },
+  {
+    type: 3,
+    text: "Low",
+  },
+  {
+    type: 4,
+    text: "Bug",
+  },
+];
+
 const TabColumns = [
   { title: "Backlog" },
   { title: "Ready" },
@@ -13,58 +32,45 @@ const Todos = [
     tab_id: 1,
     title: "[Common/Timeline] Enhance UI",
     content: "asdasdasdasdasd asd asd asd asd asd asd as das d",
-    tags: [1, 2, 3],
   },
   {
     tab_id: 2,
     title: "[Common/Table] Enhance UI, Add pagination, Add search filter",
     content: "asdasdasdasdasd asd asd asd asd asd asd as das d",
-
-    tags: [1, 2, 3],
   },
   {
     tab_id: 3,
     title: "[Common/Table] Enhance UI, Add pagination, Add search filter",
     content: "asdasdasdasdasd asd asd asd asd asd asd as das d",
-
-    tags: [1, 2, 3],
   },
   {
     tab_id: 4,
     title: "[Common/Table] Enhance UI, Add pagination, Add search filter",
     content: "asdasdasdasdasd asd asd asd asd asd asd as das d",
-
-    tags: [1, 2, 3],
   },
   {
-    id: 5,
+    tab_id: 5,
     title: "[Common/Table] Enhance UI, Add pagination, Add search filter",
     content: "asdasdasdasdasd asd asd asd asd asd asd as das d",
-
-    tags: [1, 2, 3],
   },
 ];
 
-const Tags = [
+const TodoTags = [
   {
-    id: 1,
-    type: 1,
-    text: "High",
+    todo_id: 1,
+    tag_id: 1,
   },
   {
-    id: 2,
-    type: 2,
-    text: "Frontend",
+    todo_id: 1,
+    tag_id: 2,
   },
   {
-    id: 3,
-    type: 3,
-    text: "Low",
+    todo_id: 1,
+    tag_id: 3,
   },
   {
-    todo_id: 4,
-    type: 4,
-    text: "Bug",
+    todo_id: 2,
+    tag_id: 3,
   },
 ];
 
@@ -72,4 +78,5 @@ module.exports = {
   TabColumns,
   Todos,
   Tags,
+  TodoTags,
 };
