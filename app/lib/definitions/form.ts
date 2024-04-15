@@ -1,6 +1,6 @@
 export interface CreateForm {
   content: string;
   title: string;
-  tagIds: number[];
+  tagIds?: { todoId: number }[];
   tabId: number | string | null;
 }

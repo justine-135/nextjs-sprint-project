@@ -10,7 +10,7 @@ interface ModalProps {
   title: string;
 }
 
-export const Modal = () => {
+export default function Modal() {
   const [visible, setVisible] = useToggle(false);
 
   const onClose = () => setVisible(false);
@@ -37,4 +37,4 @@ export const Modal = () => {
   };
 
   return { ModalComponent, onClose, onOpen };
-};
+}

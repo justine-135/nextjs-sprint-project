@@ -79,10 +79,11 @@ export const Todo = async ({ todo }: { todo: ITodos }) => {
       </div>
       <p className="my-small">{todo?.title}</p>
       <ul className="flex gap-1">
-        {todoData?.map((tag) => {
+        {todoData?.map(({ id, tag_id }) => {
           return (
-            <li key={tag?.id}>
-              <TagComponent id={tag?.id} />
+            <li key={id}>
+              <TagComponent id={tag_id} />
+              {tag_id}
             </li>
           );
         })}

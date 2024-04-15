@@ -147,6 +147,7 @@ export async function getTodos(id: number) {
 
 export async function getTodoTags(id: number) {
   try {
+    `SELECT  FROM WHERE todo_id=${id}`;
     const data =
       await sql<ITodoTags>`SELECT * FROM todo_tag WHERE todo_id = ${id};`;
 
@@ -158,9 +159,19 @@ export async function getTodoTags(id: number) {
 
 export async function getTags(id: number) {
   try {
-    const data = await sql<ITags>`SELECT * FROM tags;`;
+    const data = await sql<ITags>`SELECT * FROM tags WHERE id = ${id};`;
 
     return data.rows[0];
+  } catch (error) {
+    console.error("Database Error: GET todos", error);
+  }
+}
+
+export async function getAllTags() {
+  try {
+    const data = await sql<ITags>`SELECT * FROM tags;`;
+
+    return data.rows;
   } catch (error) {
     console.error("Database Error: GET todos", error);
   }
