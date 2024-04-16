@@ -1,6 +1,6 @@
 import { buttonVariants } from "@/components/ui/button";
 import Link from "next/link";
-import { ROUTE_URL } from "./lib/constants";
+import { ROUTE_URL } from "./lib/constants/routeStrings";
 
 export default function Home() {
   return (

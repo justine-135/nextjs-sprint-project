@@ -7,6 +7,7 @@ export interface ITags {
 export interface ITodos {
   id: number;
   title: string;
+  content: string;
   tags: ITags[];
 }
 

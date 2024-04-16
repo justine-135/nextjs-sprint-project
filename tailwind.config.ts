@@ -58,6 +58,7 @@ const config = {
       },
       padding: {
         small: "0.5rem",
+        md: "2rem",
         layout: "44px",
       },
       margin: {

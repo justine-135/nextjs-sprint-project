@@ -1,4 +1,4 @@
-import { ROUTE_URL } from "./constants";
+import { ROUTE_URL } from "./constants/routeStrings";
 
 export const SprintLinks = [
   { title: "Main", href: `/${ROUTE_URL.SPRINT}` },

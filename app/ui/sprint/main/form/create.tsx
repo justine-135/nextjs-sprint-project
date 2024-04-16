@@ -14,11 +14,10 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { useState } from "react";
 import { Badge } from "@/components/ui/badge";
-import { TAG_SEPARATOR } from "@/app/lib/constants";
 import { X } from "lucide-react";
 import { SelectTags } from "./select-tags";
 import { createTodo } from "@/app/lib/actions";
-import { revalidatePath } from "next/cache";
+import { TAG_SEPARATOR } from "@/app/lib/constants/utils";
 
 export const CreateForm = ({
   tabId,
@@ -55,15 +54,12 @@ export const CreateForm = ({
       };
     });
 
-    // if (form.g)
     const payload = { ...form.getValues(), tagIds: tagIds || [], tabId };
     createTodo(payload)
       .then((success) => {
         form.reset();
-        console.log(success);
       })
       .catch((error) => console.log(error.message));
-    // res.then(() => {}).catch(() => {});
 
     afterClose();
   };
@@ -99,7 +95,7 @@ export const CreateForm = ({
                 <FormControl>
                   <Textarea
                     placeholder="Tell us a little bit about yourself"
-                    className="resize-none"
+                    // className="resize-none"
                     {...field}
                   />
                 </FormControl>

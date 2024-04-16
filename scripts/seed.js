@@ -86,7 +86,7 @@ async function seedTodos(client) {
           id SERIAL PRIMARY KEY,
           tab_id INTEGER NOT NULL REFERENCES tab_columns (id) ON DELETE CASCADE,
           title VARCHAR(255) NOT NULL,
-          content VARCHAR(255)
+          content TEXT
         );
       `;
 
