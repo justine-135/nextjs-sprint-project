@@ -53,6 +53,9 @@ const config = {
           foreground: "hsl(var(--card-foreground))",
         },
       },
+      height: {
+        tabs: "calc(vh - 44px)",
+      },
       padding: {
         small: "0.5rem",
         layout: "44px",

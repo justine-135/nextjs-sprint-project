@@ -86,7 +86,7 @@ async function seedTodos(client) {
           id SERIAL PRIMARY KEY,
           tab_id INTEGER NOT NULL REFERENCES tab_columns (id) ON DELETE CASCADE,
           title VARCHAR(255) NOT NULL,
-          content VARCHAR(255) NOT NULL
+          content VARCHAR(255)
         );
       `;
 
@@ -122,8 +122,8 @@ async function seedTodoTags(client) {
     const createTable = await client.sql`
     CREATE TABLE IF NOT EXISTS todo_tag (
       id SERIAL PRIMARY KEY,
-      todo_id INTEGER NOT NULL REFERENCES todos (id) ON DELETE CASCADE,
-      tag_id INTEGER NOT NULL REFERENCES tags (id) ON DELETE CASCADE
+      todo_id INTEGER REFERENCES todos (id) ON DELETE CASCADE,
+      tag_id INTEGER REFERENCES tags (id) ON DELETE CASCADE
   );  
       `;
 

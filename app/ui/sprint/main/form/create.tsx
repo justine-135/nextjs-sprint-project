@@ -12,14 +12,21 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { TAG_SEPARATOR } from "@/app/lib/constants";
 import { X } from "lucide-react";
 import { SelectTags } from "./select-tags";
 import { createTodo } from "@/app/lib/actions";
+import { revalidatePath } from "next/cache";
 
-export const CreateForm = ({ tabId }: { tabId: number }) => {
+export const CreateForm = ({
+  tabId,
+  afterClose,
+}: {
+  tabId: number;
+  afterClose: () => void;
+}) => {
   const form = useForm({
     defaultValues: {
       title: "",
@@ -33,8 +40,6 @@ export const CreateForm = ({ tabId }: { tabId: number }) => {
     if (!selectedTags.includes(value)) {
       setSelectedTags((prev) => [...prev, value]);
     }
-
-    console.log(value);
   };
 
   const onTagRemove = (value: string) => {
@@ -48,14 +53,19 @@ export const CreateForm = ({ tabId }: { tabId: number }) => {
       return {
         todoId: Number(data),
       };
-      // return Number(firstCharacter);
     });
 
-    const payload = { ...form.getValues(), tagIds, tabId };
+    // if (form.g)
+    const payload = { ...form.getValues(), tagIds: tagIds || [], tabId };
+    createTodo(payload)
+      .then((success) => {
+        form.reset();
+        console.log(success);
+      })
+      .catch((error) => console.log(error.message));
+    // res.then(() => {}).catch(() => {});
 
-    console.log(tagIds);
-
-    await createTodo(payload);
+    afterClose();
   };
 
   return (
@@ -99,10 +109,10 @@ export const CreateForm = ({ tabId }: { tabId: number }) => {
           />
           <div className="flex gap-1">
             <ul className="flex gap-1">
-              {selectedTags?.map((tag) => {
+              {selectedTags?.map((tag, key) => {
                 const name = tag.split(TAG_SEPARATOR)[1];
                 return (
-                  <li key={tag}>
+                  <li key={key}>
                     <Badge className="flex gap-1 items-center">
                       {name} <X onClick={() => onTagRemove(tag)} size={13} />
                     </Badge>

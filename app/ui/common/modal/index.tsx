@@ -12,7 +12,6 @@ interface ModalProps {
 
 export default function Modal() {
   const [visible, setVisible] = useToggle(false);
-
   const onClose = () => setVisible(false);
   const onOpen = () => setVisible(true);
 
