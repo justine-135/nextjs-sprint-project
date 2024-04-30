@@ -3,6 +3,7 @@
 import { sql } from "@vercel/postgres";
 import { CreateForm } from "./definitions/form";
 import { revalidatePath } from "next/cache";
+import { IUser } from "./definitions/users";
 
 async function initTab() {
   await sql`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`;
@@ -83,5 +84,16 @@ export async function createTodo(payload: CreateForm) {
       message: "Failed.",
       type: 0,
     };
+  }
+}
+
+export async function Login(email: string) {
+  try {
+    const user = await sql<IUser>`SELECT * FROM users WHERE email=${email}`;
+    return user.rows[0];
+  } catch (error) {
+    console.error("Failed to fetch user:", error);
+    return { message: "Error no user" };
+    throw new Error("Failed to fetch user.");
   }
 }

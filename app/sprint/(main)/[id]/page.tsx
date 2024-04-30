@@ -1,16 +1,9 @@
 import { getTodo, getTodos } from "@/app/lib/data";
-import { TabColumns } from "@/app/ui/common/tab-columns";
-import { EditForm } from "@/app/ui/sprint/main/form/edit";
+import TodoDetail from "@/app/ui/sprint/main/detail";
 
-export default async function Sprint({ params }: { params: { id: string } }) {
-  const todosData = await getTodos();
+export default async function PageTodo({ params }: { params: { id: string } }) {
   const { id } = params;
   const todoData = await getTodo(Number(id) as number);
 
-  return (
-    <section className="mt-small overflow-auto">
-      <TabColumns data={todosData} />
-      <EditForm data={todoData} />
-    </section>
-  );
+  return <TodoDetail data={todoData} />;
 }

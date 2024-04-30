@@ -1,7 +1,7 @@
 import React, { ReactNode } from "react";
-import { Button } from "@/components/ui/button";
 import { X } from "lucide-react";
 import Link from "next/link";
+import { ROUTE_URL } from "@/app/lib/constants/routeStrings";
 
 interface IPaneProps {
   title?: string;
@@ -17,7 +17,13 @@ export const Pane = ({ title = "Pane title", id, children }: IPaneProps) => {
         <div className="modal_header flex items-center justify-between p-md">
           <div className="flex">
             <p className="font-medium text-3xl w-3/4">
-              {title} <span className="text-slate-500">[{id}]</span>
+              {title}
+              <Link
+                className="text-slate-500"
+                href={`/${ROUTE_URL.SPRINT}/${id}`}
+              >
+                [{id}]
+              </Link>
             </p>
           </div>
 

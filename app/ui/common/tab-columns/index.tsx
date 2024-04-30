@@ -21,8 +21,6 @@ import clsx from "clsx";
 import { CreateModal } from "@/app/ui/sprint/main/create-modal";
 import Link from "next/link";
 import { ROUTE_URL } from "@/app/lib/constants/routeStrings";
-import { TodoTypeValue } from "@/app/lib/constants/views";
-import { ETodoViewType } from "@/app/lib/enums/views";
 
 const actions = [
   { name: "Edit", icon: <Edit2Icon size={13} /> },
@@ -94,9 +92,7 @@ const Todo = ({ todo }: { todo: ITodos }) => {
       </div>
       <div className="my-small">
         <Link
-          href={`/${ROUTE_URL.SPRINT}/${taskId}?view=${
-            TodoTypeValue[ETodoViewType.PANE]
-          }`}
+          href={`/${ROUTE_URL.SPRINT}/pane/${taskId}`}
           className="hover:text-blue-600 hover:underline"
         >
           {title}

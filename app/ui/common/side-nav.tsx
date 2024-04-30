@@ -17,9 +17,12 @@ export const SideNav = () => {
             return (
               <li className="flex w-full " key={key}>
                 <Link
-                  className={clsx("w-full p-small rounded-xl", {
-                    "bg-slate-100": pathname === link.href,
-                  })}
+                  className={clsx(
+                    "w-full p-small rounded-xl hover:bg-slate-50",
+                    {
+                      "bg-slate-200 hover:bg-slate-200": pathname === link.href,
+                    }
+                  )}
                   href={link.href}
                 >
                   {link.title}

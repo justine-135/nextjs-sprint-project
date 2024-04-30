@@ -4,7 +4,9 @@ const {
   Todos,
   Tags,
   TodoTags,
+  Users,
 } = require("../app/lib/placeholder-data.js");
+const bcrypt = require("bcrypt");
 
 async function seedTags(client) {
   try {
@@ -13,7 +15,9 @@ async function seedTags(client) {
         CREATE TABLE IF NOT EXISTS tags (
           id SERIAL PRIMARY KEY,
           type INT,
-          text VARCHAR(255) NOT NULL
+          text VARCHAR(255) NOT NULL,
+          created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+          updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         );
       `;
 
@@ -48,7 +52,9 @@ async function seedTab(client) {
     const createTable = await client.sql`
         CREATE TABLE IF NOT EXISTS tab_columns (
           id SERIAL PRIMARY KEY,
-          title VARCHAR(255) NOT NULL
+          title VARCHAR(255) NOT NULL,
+          created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+          updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         );
       `;
 
@@ -86,7 +92,9 @@ async function seedTodos(client) {
           id SERIAL PRIMARY KEY,
           tab_id INTEGER NOT NULL REFERENCES tab_columns (id) ON DELETE CASCADE,
           title VARCHAR(255) NOT NULL,
-          content TEXT
+          content TEXT,
+          created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+          updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         );
       `;
 
@@ -123,7 +131,9 @@ async function seedTodoTags(client) {
     CREATE TABLE IF NOT EXISTS todo_tag (
       id SERIAL PRIMARY KEY,
       todo_id INTEGER REFERENCES todos (id) ON DELETE CASCADE,
-      tag_id INTEGER REFERENCES tags (id) ON DELETE CASCADE
+      tag_id INTEGER REFERENCES tags (id) ON DELETE CASCADE,
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+      updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
   );  
       `;
 
@@ -152,14 +162,55 @@ async function seedTodoTags(client) {
   }
 }
 
+async function seedUsers(client) {
+  try {
+    await client.sql`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`;
+    // Create the "users" table if it doesn't exist
+    const createTable = await client.sql`
+    CREATE TABLE IF NOT EXISTS users (
+      id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+      name VARCHAR(255) NOT NULL,
+      email TEXT NOT NULL UNIQUE,
+      password TEXT NOT NULL,
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+      updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+  );  
+      `;
+
+    console.log(`Created "users" table`);
+
+    // Insert data into the "users" table
+    const insertedUsers = await Promise.all(
+      Users.map(async (user) => {
+        const hashedPassword = await bcrypt.hash(user.password, 10);
+        console.log(user.username, hashedPassword);
+        return client.sql`
+        INSERT INTO users (id, name, email, password)
+        VALUES (${user.id}, ${user.name}, ${user.email}, ${hashedPassword})
+        ON CONFLICT (id) DO NOTHING;
+      `;
+      })
+    );
+    console.log(`Seeded ${insertedUsers.length} columns`);
+
+    return {
+      createTable,
+      tabColumns: insertedUsers,
+    };
+  } catch (error) {
+    console.error("Error seeding users:", error);
+    throw error;
+  }
+}
+
 async function main() {
   const client = await db.connect();
 
-  await seedTags(client);
-  await seedTab(client);
-  await seedTodos(client);
-  await seedTodoTags(client);
-
+  // await seedTags(client);
+  // await seedTab(client);
+  // await seedTodos(client);
+  // await seedTodoTags(client);
+  await seedUsers(client);
   await client.end();
 }
 
