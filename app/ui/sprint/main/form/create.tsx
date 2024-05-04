@@ -16,7 +16,7 @@ import { useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { X } from "lucide-react";
 import { SelectTags } from "./select-tags";
-import { createTodo } from "@/app/lib/actions";
+import { createTodo } from "@/app/lib/actions/queries";
 import { TAG_SEPARATOR } from "@/app/lib/constants/utils";
 
 export const CreateForm = ({

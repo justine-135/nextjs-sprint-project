@@ -183,7 +183,6 @@ async function seedUsers(client) {
     const insertedUsers = await Promise.all(
       Users.map(async (user) => {
         const hashedPassword = await bcrypt.hash(user.password, 10);
-        console.log(user.username, hashedPassword);
         return client.sql`
         INSERT INTO users (id, name, email, password)
         VALUES (${user.id}, ${user.name}, ${user.email}, ${hashedPassword})
@@ -206,10 +205,10 @@ async function seedUsers(client) {
 async function main() {
   const client = await db.connect();
 
-  // await seedTags(client);
-  // await seedTab(client);
-  // await seedTodos(client);
-  // await seedTodoTags(client);
+  await seedTags(client);
+  await seedTab(client);
+  await seedTodos(client);
+  await seedTodoTags(client);
   await seedUsers(client);
   await client.end();
 }
