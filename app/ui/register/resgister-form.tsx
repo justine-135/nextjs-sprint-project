@@ -82,7 +82,7 @@ export default function LoginForm() {
   };
 
   return (
-    <div className="w-[300px]">
+    <div className="w-54">
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)}>
           <div className="flex flex-col gap-4 ">
@@ -93,12 +93,9 @@ export default function LoginForm() {
                 <FormItem>
                   <FormLabel>Email</FormLabel>
                   <FormControl>
-                    <Input
-                      placeholder="Enter your email"
-                      type="email"
-                      {...field}
-                    />
+                    <Input placeholder="shadcn" type="email" {...field} />
                   </FormControl>
+                  <FormDescription>Enter your email</FormDescription>
                   <FormMessage>{fieldErrors?.email?._errors[0]}</FormMessage>
                 </FormItem>
               )}
@@ -110,12 +107,9 @@ export default function LoginForm() {
                 <FormItem>
                   <FormLabel>Password</FormLabel>
                   <FormControl>
-                    <Input
-                      placeholder="Enter your password"
-                      type="password"
-                      {...field}
-                    />
+                    <Input placeholder="shadcn" type="password" {...field} />
                   </FormControl>
+                  <FormDescription>Enter your password</FormDescription>
                   <FormMessage>{fieldErrors?.password?._errors[0]}</FormMessage>
                 </FormItem>
               )}

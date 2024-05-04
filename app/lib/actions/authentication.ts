@@ -4,10 +4,7 @@ import { signIn } from "@/auth";
 import { AuthError } from "next-auth";
 import { ILoginParams } from "../definitions/users";
 
-export async function authenticate(
-  prevState: string | undefined,
-  formData: ILoginParams
-) {
+export async function authenticate(formData: ILoginParams) {
   try {
     const res = await signIn("credentials", formData);
     return res;
