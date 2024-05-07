@@ -10,7 +10,6 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { useState } from "react";
 import { Badge } from "@/components/ui/badge";
@@ -18,14 +17,16 @@ import { X } from "lucide-react";
 import { SelectTags } from "./select-tags";
 import { createTodo } from "@/app/lib/actions/queries";
 import { TAG_SEPARATOR } from "@/app/lib/constants/utils";
+import useLoading from "@/app/lib/hooks/useLoading";
+import LoaderButton from "@/app/ui/common/button";
+import { useToast } from "@/components/ui/use-toast";
 
-export const CreateForm = ({
-  tabId,
-  afterClose,
-}: {
+interface ICreateForm {
   tabId: number;
   afterClose: () => void;
-}) => {
+}
+
+export const CreateForm = ({ tabId, afterClose }: ICreateForm) => {
   const form = useForm({
     defaultValues: {
       title: "",
@@ -33,6 +34,9 @@ export const CreateForm = ({
     },
   });
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
+
+  const { isLoading, startLoading, stopLoading } = useLoading();
+  const { toast } = useToast();
 
   const onTagSelect = (value: string) => {
     // Check if the value already exists in the array
@@ -46,6 +50,8 @@ export const CreateForm = ({
   };
 
   const onSubmit = async () => {
+    startLoading();
+
     const tagIds = selectedTags.map((str) => {
       const [firstCharacter] = str.split(",");
       const data = firstCharacter;
@@ -55,13 +61,27 @@ export const CreateForm = ({
     });
 
     const payload = { ...form.getValues(), tagIds: tagIds || [], tabId };
+
     createTodo(payload)
       .then((success) => {
         form.reset();
+        if (success)
+          toast({
+            description: "Task created",
+          });
       })
-      .catch((error) => console.log(error.message));
-
-    afterClose();
+      .catch((error) => {
+        if (error)
+          toast({
+            variant: "destructive",
+            title: "Something went wrong!",
+            description: "Your task is not created.",
+          });
+      })
+      .finally(() => {
+        stopLoading();
+        if (!isLoading) afterClose();
+      });
   };
 
   return (
@@ -122,7 +142,7 @@ export const CreateForm = ({
         <hr />
         <div className="flex p-2">
           <div className="ml-auto">
-            <Button type="submit">Submit</Button>
+            <LoaderButton title="Add" type="submit" loading={isLoading} />
           </div>
         </div>
       </form>

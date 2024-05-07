@@ -21,28 +21,71 @@ import clsx from "clsx";
 import { CreateModal } from "@/app/ui/sprint/main/create-modal";
 import Link from "next/link";
 import { ROUTE_URL } from "@/app/lib/constants/routeStrings";
+import { DeleteTodo } from "@/app/lib/actions/queries";
+import { useToast } from "@/components/ui/use-toast";
+import useLoading from "@/app/lib/hooks/useLoading";
+import { LoaderIcon } from "lucide-react";
 
-const actions = [
-  { name: "Edit", icon: <Edit2Icon size={13} /> },
-  { name: "Delete", icon: <LucideTrash size={13} stroke="red" /> },
-];
+interface IActionButton {
+  id: number;
+}
 
-const ActionButton = () => {
+const ActionButton = ({ id }: IActionButton) => {
+  const { toast } = useToast();
+  const { isLoading, startLoading, stopLoading } = useLoading();
+
+  const actions = [
+    { name: "Edit", icon: <Edit2Icon size={13} /> },
+    {
+      name: "Delete",
+      icon: <LucideTrash size={13} stroke="red" />,
+    },
+  ];
+
+  const onDelete = async () => {
+    if (id) {
+      startLoading();
+      try {
+        const res = await DeleteTodo(id);
+        if (res.success)
+          toast({
+            title: "Task has been deleted",
+          });
+      } catch (error) {
+        toast({
+          variant: "destructive",
+          title: "Something went wrong!",
+          description: error as React.ReactNode,
+        });
+      } finally {
+        stopLoading();
+      }
+    }
+  };
+
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger>
-        <EllipsisVerticalIcon size={16} />
+      <DropdownMenuTrigger className="outline-none">
+        {isLoading ? (
+          <LoaderIcon className="animate-spin" />
+        ) : (
+          <EllipsisVerticalIcon size={16} />
+        )}
       </DropdownMenuTrigger>
       <DropdownMenuContent>
         <DropdownMenuLabel>Options</DropdownMenuLabel>
         <DropdownMenuSeparator />
         {actions?.map((action) => {
+          const onAction = () => {
+            if (action.name === "Delete") onDelete();
+          };
+
           return (
             <DropdownMenuItem
               key={action.name}
               className="hover:bg-slate-100 cursor-pointer"
             >
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2" onClick={onAction}>
                 {action?.icon}
                 <span
                   className={clsx(
@@ -88,7 +131,7 @@ const Todo = ({ todo }: { todo: ITodos }) => {
           <CircleDotDashedIcon size={16} />
           <span className="text-xs text-slate-500">#{taskId}</span>
         </div>
-        <ActionButton />
+        <ActionButton id={taskId} />
       </div>
       <div className="my-small">
         <Link

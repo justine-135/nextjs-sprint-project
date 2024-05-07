@@ -1,7 +1,7 @@
 "use server";
 
 import { sql } from "@vercel/postgres";
-import { CreateForm } from "../definitions/form";
+import { ICreateTodoForm } from "../definitions/form";
 import { revalidatePath } from "next/cache";
 
 async function initTab() {
@@ -28,7 +28,7 @@ async function initTab() {
   return insertTabColumns.rows[0].id;
 }
 
-export async function createTodo(payload: CreateForm) {
+export async function createTodo(payload: ICreateTodoForm) {
   const { title, content, tabId, tagIds } = payload;
 
   let todoInserted = false;
@@ -79,6 +79,27 @@ export async function createTodo(payload: CreateForm) {
       type: 2,
     };
   } else {
+    return {
+      message: "Failed.",
+      type: 0,
+    };
+  }
+}
+
+export async function DeleteTodo(id: number) {
+  try {
+    await sql`
+      DELETE FROM todos WHERE id = ${id};
+    `;
+
+    revalidatePath("/sprint");
+
+    return {
+      message: "Success",
+      success: 1,
+    };
+  } catch (error) {
+    console.error("Error deleting data:", error); // Log error
     return {
       message: "Failed.",
       type: 0,

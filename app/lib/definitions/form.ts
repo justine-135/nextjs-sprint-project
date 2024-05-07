@@ -1,4 +1,4 @@
-export interface CreateForm {
+export interface ICreateTodoForm {
   content?: string;
   title?: string;
   tagIds?: { todoId: number }[];
