@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import { ITabColumns, ITags, ITodos } from "@/app/lib/definitions/tab-column";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -8,6 +8,7 @@ import {
   Edit2Icon,
   EllipsisVerticalIcon,
   LucideTrash,
+  PlusIcon,
 } from "lucide-react";
 import {
   DropdownMenu,
@@ -18,13 +19,15 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import clsx from "clsx";
-import { CreateModal } from "@/app/ui/sprint/main/create-modal";
 import Link from "next/link";
 import { ROUTE_URL } from "@/app/lib/constants/routeStrings";
 import { DeleteTodo } from "@/app/lib/actions/queries";
 import { useToast } from "@/components/ui/use-toast";
 import useLoading from "@/app/lib/hooks/useLoading";
 import { LoaderIcon } from "lucide-react";
+import Modal from "../modal";
+import { CreateForm } from "../../sprint/main/form/create";
+import { Button } from "@/components/ui/button";
 
 interface IActionButton {
   id: number;
@@ -161,8 +164,19 @@ const Todos = ({ todos }: { todos?: ITodos[] }) => {
   );
 };
 
-const TabColumn = ({ data }: { data: ITabColumns }) => {
+interface ITabColumnProps {
+  data: ITabColumns;
+  onOpenModal: () => void;
+  setTabId: React.Dispatch<React.SetStateAction<number | undefined>>;
+}
+
+const TabColumn = ({ data, onOpenModal, setTabId }: ITabColumnProps) => {
   const { id, title, todos } = data;
+
+  const handleOpenModal = () => {
+    onOpenModal();
+    setTabId(id);
+  };
 
   return (
     <>
@@ -171,7 +185,9 @@ const TabColumn = ({ data }: { data: ITabColumns }) => {
           <p className="font-semibold">{title}</p>
           <Badge>{todos?.length}</Badge>
         </div>
-        <CreateModal tabId={id} />
+        <Button size={null} variant="outline" onClick={handleOpenModal}>
+          <PlusIcon />
+        </Button>
       </div>
       <div className="w-72 border-default rounded-lg rounded-tl-none rounded-tr-none h-full">
         <Todos todos={todos} />
@@ -181,15 +197,23 @@ const TabColumn = ({ data }: { data: ITabColumns }) => {
 };
 
 export const TabColumns = ({ data }: { data?: ITabColumns[] }) => {
+  const [tabId, setTabId] = useState<number>();
+  const { onOpen, ModalComponent, onClose } = Modal();
+
   return (
-    <ul className="flex gap-6 fixed h-[84%]">
-      {data?.map((col) => {
-        return (
-          <li className="flex-shrink-0" key={col.id}>
-            <TabColumn data={col} />
-          </li>
-        );
-      })}
-    </ul>
+    <>
+      <ul className="flex gap-6 fixed h-[84%]">
+        {data?.map((col) => {
+          return (
+            <li className="flex-shrink-0" key={col.id}>
+              <TabColumn data={col} onOpenModal={onOpen} setTabId={setTabId} />
+            </li>
+          );
+        })}
+      </ul>
+      <ModalComponent title="Add todo">
+        <CreateForm tabId={tabId} afterClose={onClose} />
+      </ModalComponent>
+    </>
   );
 };

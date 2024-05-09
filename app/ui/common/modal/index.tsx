@@ -21,15 +21,19 @@ export default function Modal() {
     return (
       <>
         <div className="fixed inset-0 bg-slate-950 bg-opacity-50" />
-        <div className="absolute top-24 left-1/2 -translate-x-1/2 w-[560px] bg-white rounded-lg">
-          <div className="modal_header flex items-center justify-between p-2">
-            <p className="font-semibold">{title}</p>
-            <Button className="p-0 h-4" variant={null} onClick={onClose}>
-              <X size={16} />
-            </Button>
+        <div className="absolute">
+          <div className="relative flex items-center justify-center">
+            <div className="w-[560px] bg-white rounded-lg">
+              <div className="modal_header flex items-center justify-between p-2">
+                <p className="font-semibold">{title}</p>
+                <Button className="p-0 h-4" variant={null} onClick={onClose}>
+                  <X size={16} />
+                </Button>
+              </div>
+              <hr />
+              <div className="modal_body">{children}</div>
+            </div>
           </div>
-          <hr />
-          <div className="modal_body">{children}</div>
         </div>
       </>
     );

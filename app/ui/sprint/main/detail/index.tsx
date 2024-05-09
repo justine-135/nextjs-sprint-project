@@ -1,19 +1,16 @@
 import { ROUTE_URL } from "@/app/lib/constants/routeStrings";
 import { ITodos } from "@/app/lib/definitions/tab-column";
-import { Button, buttonVariants } from "@/components/ui/button";
+import LinkButton from "@/app/ui/common/button/link-button";
 import { Textarea } from "@/components/ui/textarea";
-import Link from "next/link";
 
 export default function TodoDetail({ data }: { data?: ITodos }) {
   return (
     <div>
       <div>
-        <Link
-          className={buttonVariants({ variant: "default" })}
+        <LinkButton
+          title="Back to board"
           href={`/${ROUTE_URL.SPRINT}/pane/${data?.id}`}
-        >
-          Back to board
-        </Link>
+        />
       </div>
       <div className="flex items-start gap-12 mt-10">
         <section className="p-md rounded border-default w-9/12">

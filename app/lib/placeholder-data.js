@@ -29,26 +29,31 @@ const TabColumns = [
 
 const Todos = [
   {
+    project_id: "410544b2-4001-4271-9855-fec4b6a6442a",
     tab_id: 1,
     title: "[Common/Timeline] Enhance UI",
     content: "asdasdasdasdasd asd asd asd asd asd asd as das d",
   },
   {
+    project_id: "410544b2-4001-4271-9855-fec4b6a6442a",
     tab_id: 2,
     title: "[Common/Table] Enhance UI, Add pagination, Add search filter",
     content: "asdasdasdasdasd asd asd asd asd asd asd as das d",
   },
   {
+    project_id: "410544b2-4001-4271-9855-fec4b6a6442a",
     tab_id: 3,
     title: "[Common/Table] Enhance UI, Add pagination, Add search filter",
     content: "asdasdasdasdasd asd asd asd asd asd asd as das d",
   },
   {
+    project_id: "410544b2-4001-4271-9855-fec4b6a6442a",
     tab_id: 4,
     title: "[Common/Table] Enhance UI, Add pagination, Add search filter",
     content: "asdasdasdasdasd asd asd asd asd asd asd as das d",
   },
   {
+    project_id: "410544b2-4001-4271-9855-fec4b6a6442a",
     tab_id: 5,
     title: "[Common/Table] Enhance UI, Add pagination, Add search filter",
     content: "asdasdasdasdasd asd asd asd asd asd asd as das d",
@@ -83,10 +88,43 @@ const Users = [
   },
 ];
 
+const Projects = [
+  {
+    id: "410544b2-4001-4271-9855-fec4b6a6442a",
+    name: "Project 1",
+    description: "This is description for project 1.",
+    ownerId: "410544b2-4001-4271-9855-fec4b6a6442a",
+    date_created:
+      "Tue Apr 30 2024 03:55:18 GMT+0800 (Philippine Standard Time)",
+  },
+  {
+    id: "410544b2-4001-4271-9855-fec4b6a64422",
+    name: "Project 2",
+    description: "This is description for project 2.",
+    ownerId: "410544b2-4001-4271-9855-fec4b6a6442a",
+    date_created:
+      "Tue Apr 30 2024 03:55:19 GMT+0800 (Philippine Standard Time)",
+  },
+  {
+    id: "410544b2-4001-4271-9855-fec4b6a64423",
+    name: "Project 3",
+    description: "This is description for project 3.",
+    ownerId: "410544b2-4001-4271-9855-fec4b6a6442a",
+    created_at: "Tue Apr 30 2024 03:55:20 GMT+0800 (Philippine Standard Time)",
+  },
+];
+
+const ProjectMembers = [
+  {
+    project_id: "410544b2-4001-4271-9855-fec4b6a6442a",
+  },
+];
+
 module.exports = {
   TabColumns,
   Todos,
   Tags,
   TodoTags,
   Users,
+  Projects,
 };

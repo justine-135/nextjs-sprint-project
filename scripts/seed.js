@@ -5,8 +5,46 @@ const {
   Tags,
   TodoTags,
   Users,
+  Projects,
 } = require("../app/lib/placeholder-data.js");
 const bcrypt = require("bcrypt");
+
+async function seedProjects(client) {
+  try {
+    await client.sql`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`;
+    // Create the "projects" table if it doesn't exist
+    const createTable = await client.sql`
+    CREATE TABLE IF NOT EXISTS projects (
+      id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+      name VARCHAR(255) NOT NULL,
+      description TEXT,
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    ); `;
+
+    console.log(`Created "projects" table`);
+
+    // Insert data into the "projects" table
+    const insertProjects = await Promise.all(
+      Projects.map(async (tab) => {
+        return client.sql`
+          INSERT INTO projects (id, name, description)
+          VALUES (${tab.id}, ${tab.name},  ${tab.description})
+          ON CONFLICT (id) DO NOTHING;
+        `;
+      })
+    );
+
+    console.log(`Seeded ${insertProjects.length} columns`);
+
+    return {
+      createTable,
+      tabColumns: insertProjects,
+    };
+  } catch (error) {
+    console.error("Error seeding todo tag:", error);
+    throw error;
+  }
+}
 
 async function seedTags(client) {
   try {
@@ -90,6 +128,7 @@ async function seedTodos(client) {
     const createTable = await client.sql`
         CREATE TABLE IF NOT EXISTS todos (
           id SERIAL PRIMARY KEY,
+          project_id UUID REFERENCES projects (id) ON DELETE CASCADE,
           tab_id INTEGER NOT NULL REFERENCES tab_columns (id) ON DELETE CASCADE,
           title VARCHAR(255) NOT NULL,
           content TEXT,
@@ -104,8 +143,8 @@ async function seedTodos(client) {
     const insertTodos = await Promise.all(
       Todos.map(async (tab) => {
         return client.sql`
-          INSERT INTO todos (tab_id, title, content)
-          VALUES (${tab.tab_id}, ${tab.title}, ${tab.content})
+          INSERT INTO todos (tab_id, project_id, title, content)
+          VALUES (${tab.tab_id}, ${tab.project_id}, ${tab.title}, ${tab.content})
           ON CONFLICT (id) DO NOTHING;
         `;
       })
@@ -205,6 +244,7 @@ async function seedUsers(client) {
 async function main() {
   const client = await db.connect();
 
+  await seedProjects(client);
   await seedTags(client);
   await seedTab(client);
   await seedTodos(client);

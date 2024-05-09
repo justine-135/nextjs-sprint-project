@@ -2,6 +2,17 @@
 
 import { sql } from "@vercel/postgres";
 import { ITabColumns, ITags, ITodos } from "./definitions/tab-column";
+import { IProjects } from "./definitions/projects";
+
+export async function GetProjects() {
+  try {
+    const data = await sql<IProjects>`SELECT * FROM projects;`;
+
+    return data.rows;
+  } catch (error) {
+    console.error("Database Error: GET projects", error);
+  }
+}
 
 export async function getTabColumns() {
   try {
@@ -33,7 +44,7 @@ export async function getAllTags() {
   }
 }
 
-export async function getTodos() {
+export async function getTodos(id: string) {
   try {
     const data = await sql<ITodos>`
     SELECT 
@@ -60,22 +71,15 @@ export async function getTodos() {
       ) AS todos
     FROM tab_columns
     LEFT JOIN todos ON tab_columns.id = todos.tab_id
+    WHERE project_id = ${id}
     GROUP BY tab_columns.id;
     `;
 
     return data.rows;
   } catch (error) {
     console.error("Database Error: GET todos", error);
-    return [
-      {
-        id: 1,
-        title: "Backlog",
-        todos: [],
-      },
-    ];
   }
 }
-
 export async function getTodo(id: number) {
   try {
     const data = await sql<ITodos>`

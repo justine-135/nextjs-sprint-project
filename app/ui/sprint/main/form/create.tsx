@@ -20,13 +20,19 @@ import { TAG_SEPARATOR } from "@/app/lib/constants/utils";
 import useLoading from "@/app/lib/hooks/useLoading";
 import LoaderButton from "@/app/ui/common/button";
 import { useToast } from "@/components/ui/use-toast";
+import { usePathname } from "next/navigation";
 
 interface ICreateForm {
-  tabId: number;
+  tabId?: number;
   afterClose: () => void;
 }
 
 export const CreateForm = ({ tabId, afterClose }: ICreateForm) => {
+  const router = usePathname();
+
+  const lastSlashIndex = router.lastIndexOf("/");
+  const projectId = router.substring(lastSlashIndex + 1);
+
   const form = useForm({
     defaultValues: {
       title: "",
@@ -60,7 +66,12 @@ export const CreateForm = ({ tabId, afterClose }: ICreateForm) => {
       };
     });
 
-    const payload = { ...form.getValues(), tagIds: tagIds || [], tabId };
+    const payload = {
+      ...form.getValues(),
+      tagIds: tagIds || [],
+      tabId,
+      project_id: projectId,
+    };
 
     createTodo(payload)
       .then((success) => {

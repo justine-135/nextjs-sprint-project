@@ -29,15 +29,15 @@ async function initTab() {
 }
 
 export async function createTodo(payload: ICreateTodoForm) {
-  const { title, content, tabId, tagIds } = payload;
+  const { project_id, title, content, tabId, tagIds } = payload;
 
   let todoInserted = false;
   let tagsInserted = false;
 
   try {
     const insertTodoQuery = await sql`
-      INSERT INTO todos (tab_id, title, content)
-      VALUES (${tabId}, ${title}, ${content})
+      INSERT INTO todos (project_id, tab_id, title, content)
+      VALUES (${project_id}, ${tabId}, ${title}, ${content})
       RETURNING *;
     `;
 
