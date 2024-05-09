@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { ColumnDef } from "@tanstack/react-table";
 import { ArrowUpDown } from "lucide-react";
-import LinkButton from "@/app/ui/common/button/link-button";
+import ActionButton from "@/app/ui/common/button";
 
 export const columns: ColumnDef<IProjects>[] = [
   {
@@ -48,7 +48,9 @@ export const columns: ColumnDef<IProjects>[] = [
     },
     cell: ({ cell }) => {
       const { name, id } = cell.row.original;
-      return <LinkButton title={name} href={`sprint/${id}`} />;
+      return (
+        <ActionButton title={name} href={`sprint/${id}`} buttonType="link" />
+      );
     },
   },
   {

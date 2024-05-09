@@ -18,9 +18,9 @@ import { SelectTags } from "./select-tags";
 import { createTodo } from "@/app/lib/actions/queries";
 import { TAG_SEPARATOR } from "@/app/lib/constants/utils";
 import useLoading from "@/app/lib/hooks/useLoading";
-import LoaderButton from "@/app/ui/common/button";
 import { useToast } from "@/components/ui/use-toast";
 import { usePathname } from "next/navigation";
+import ActionButton from "@/app/ui/common/button";
 
 interface ICreateForm {
   tabId?: number;
@@ -153,7 +153,7 @@ export const CreateForm = ({ tabId, afterClose }: ICreateForm) => {
         <hr />
         <div className="flex p-2">
           <div className="ml-auto">
-            <LoaderButton title="Add" type="submit" loading={isLoading} />
+            <ActionButton title="Add" type="submit" loading={isLoading} />
           </div>
         </div>
       </form>

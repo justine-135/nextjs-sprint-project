@@ -68,13 +68,12 @@ export async function getTodos(id: string) {
                 WHERE todo_tag.todo_id = todos.id
             )
         ) ORDER BY todos.id ASC
-      ) AS todos
-    FROM tab_columns
-    LEFT JOIN todos ON tab_columns.id = todos.tab_id
-    WHERE project_id = ${id}
-    GROUP BY tab_columns.id;
+    ) AS todos
+FROM tab_columns
+LEFT JOIN todos ON tab_columns.id = todos.tab_id
+    AND project_id = ${id} -- Move the condition here
+GROUP BY tab_columns.id;
     `;
-
     return data.rows;
   } catch (error) {
     console.error("Database Error: GET todos", error);

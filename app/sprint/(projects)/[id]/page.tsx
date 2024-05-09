@@ -1,5 +1,5 @@
 import { getTodos } from "@/app/lib/data";
-import LinkButton from "@/app/ui/common/button/link-button";
+import ActionButton from "@/app/ui/common/button";
 import { TabColumns } from "@/app/ui/common/tab-columns";
 import { Toaster } from "@/components/ui/toaster";
 
@@ -7,9 +7,11 @@ export default async function Projects({ params }: { params: { id: string } }) {
   const { id } = params;
   const data = await getTodos(id);
 
+  // console.log(data?.todos);
+
   return (
     <>
-      <LinkButton title="Back" href="/sprint" />
+      <ActionButton title="Back" href="/sprint" buttonType="link" />
 
       <section className="mt-small h-full">
         <TabColumns data={data} />

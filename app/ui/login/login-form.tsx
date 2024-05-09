@@ -18,7 +18,7 @@ import { z, ZodFormattedError } from "zod";
 import { useToast } from "@/components/ui/use-toast";
 import { INVALID_CREDENTIALS } from "@/app/lib/constants/auth";
 import useLoading from "@/app/lib/hooks/useLoading";
-import LoaderButton from "../common/button";
+import ActionButton from "../common/button";
 
 interface IFormParams {
   email: string;
@@ -121,7 +121,12 @@ export default function LoginForm() {
             />
           </div>
           <div className="flex flex-col mt-5">
-            <LoaderButton title="Login" loading={isLoading} type="submit" />
+            <ActionButton
+              title="Login"
+              loading={isLoading}
+              type="submit"
+              buttonType="link"
+            />
             <Link
               className={buttonVariants({ variant: "link" })}
               href="/register"

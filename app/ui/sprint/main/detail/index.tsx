@@ -1,13 +1,14 @@
 import { ROUTE_URL } from "@/app/lib/constants/routeStrings";
 import { ITodos } from "@/app/lib/definitions/tab-column";
-import LinkButton from "@/app/ui/common/button/link-button";
 import { Textarea } from "@/components/ui/textarea";
+import ActionButton from "@/app/ui/common/button";
 
 export default function TodoDetail({ data }: { data?: ITodos }) {
   return (
     <div>
       <div>
-        <LinkButton
+        <ActionButton
+          buttonType="link"
           title="Back to board"
           href={`/${ROUTE_URL.SPRINT}/pane/${data?.id}`}
         />

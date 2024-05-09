@@ -126,6 +126,8 @@ const TagComponent = ({ tags }: { tags?: ITags[] }) => {
 const Todo = ({ todo }: { todo: ITodos }) => {
   const { id: taskId, title, tags } = todo;
 
+  if (!taskId) return null;
+
   return (
     <div className="p-small border-default rounded-md ">
       <div className="flex items-center justify-between">
