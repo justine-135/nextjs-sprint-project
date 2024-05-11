@@ -78,7 +78,8 @@ export const CreateForm = ({ tabId, handleCloseDialog }: ICreateForm) => {
         form.reset();
         if (success)
           toast({
-            description: "Task created",
+            title: "Task created!",
+            description: "New task has been created successfully.",
           });
       })
       .catch((error) => {

@@ -15,6 +15,7 @@ export interface ITabColumns {
   id: number;
   title: string;
   todos?: ITodos[] | undefined;
+  name: string;
 }
 
 export interface SeedTabColumns {

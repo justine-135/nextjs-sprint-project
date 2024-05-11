@@ -28,7 +28,7 @@ async function seedProjects(client) {
       Projects.map(async (tab) => {
         return client.sql`
           INSERT INTO projects (id, name, description)
-          VALUES (${tab.id}, ${tab.name},  ${tab.description})
+          VALUES (${tab.id}, ${tab.name}, ${tab.description})
           ON CONFLICT (id) DO NOTHING;
         `;
       })
@@ -90,6 +90,7 @@ async function seedTab(client) {
     const createTable = await client.sql`
         CREATE TABLE IF NOT EXISTS tab_columns (
           id SERIAL PRIMARY KEY,
+          project_id UUID REFERENCES projects (id) ON DELETE CASCADE,
           title VARCHAR(255) NOT NULL,
           created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
           updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
@@ -99,11 +100,12 @@ async function seedTab(client) {
     console.log(`Created "tab_columns" table`);
 
     // Insert data into the "users" table
+
     const insertTabColumns = await Promise.all(
       TabColumns.map(async (tab) => {
         return client.sql`
-          INSERT INTO tab_columns (title)
-          VALUES (${tab.title})
+          INSERT INTO tab_columns (project_id, title)
+          VALUES (${tab.project_id}, ${tab.title})
           ON CONFLICT (id) DO NOTHING;
         `;
       })

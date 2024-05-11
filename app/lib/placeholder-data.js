@@ -18,13 +18,14 @@ const Tags = [
 ];
 
 const TabColumns = [
-  { title: "Backlog" },
-  { title: "Ready" },
+  { project_id: "410544b2-4001-4271-9855-fec4b6a6442a", title: "Backlog" },
+  { project_id: "410544b2-4001-4271-9855-fec4b6a6442a", title: "Ready" },
   {
+    project_id: "410544b2-4001-4271-9855-fec4b6a6442a",
     title: "In progress",
   },
-  { title: "In review" },
-  { title: "Done" },
+  { project_id: "410544b2-4001-4271-9855-fec4b6a6442a", title: "In review" },
+  { project_id: "410544b2-4001-4271-9855-fec4b6a6442a", title: "Done" },
 ];
 
 const Todos = [
@@ -59,6 +60,54 @@ const Todos = [
     content: "asdasdasdasdasd asd asd asd asd asd asd as das d",
   },
 ];
+
+// const data = {
+//   title: string // This is the project name
+//   result: [ // Array of todos
+//   { // These are sample data
+//     project_id: "410544b2-4001-4271-9855-fec4b6a6442a",
+//     tab_id: 3,
+//     title: "[Common/Table] Enhance UI, Add pagination, Add search filter",
+//     content: "asdasdasdasdasd asd asd asd asd asd asd as das d",
+//   },
+//   {
+//     project_id: "410544b2-4001-4271-9855-fec4b6a6442a",
+//     tab_id: 4,
+//     title: "[Common/Table] Enhance UI, Add pagination, Add search filter",
+//     content: "asdasdasdasdasd asd asd asd asd asd asd as das d",
+//   },
+//   {
+//     project_id: "410544b2-4001-4271-9855-fec4b6a6442a",
+//     tab_id: 5,
+//     title: "[Common/Table] Enhance UI, Add pagination, Add search filter",
+//     content: "asdasdasdasdasd asd asd asd asd asd asd as das d",
+//   },
+//   ]
+// }
+
+// {
+//   title: string // This is the project name
+//   result: [ // Array of todos
+//   { // These are sample data
+//     project_id: "410544b2-4001-4271-9855-fec4b6a6442a",
+//     tab_id: 3,
+//     title: "[Common/Table] Enhance UI, Add pagination, Add search filter",
+//     content: "asdasdasdasdasd asd asd asd asd asd asd as das d",
+//   },
+//   {
+//     project_id: "410544b2-4001-4271-9855-fec4b6a6442a",
+//     tab_id: 4,
+//     title: "[Common/Table] Enhance UI, Add pagination, Add search filter",
+//     content: "asdasdasdasdasd asd asd asd asd asd asd as das d",
+//   },
+//   {
+//     project_id: "410544b2-4001-4271-9855-fec4b6a6442a",
+//     tab_id: 5,
+//     title: "[Common/Table] Enhance UI, Add pagination, Add search filter",
+//     content: "asdasdasdasdasd asd asd asd asd asd asd as das d",
+//   },
+//   ]
+// }
 
 const TodoTags = [
   {

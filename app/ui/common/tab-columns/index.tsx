@@ -1,11 +1,9 @@
 "use client";
 
-import React, { Dispatch, SetStateAction, useState } from "react";
 import { ITabColumns, ITags, ITodos } from "@/app/lib/definitions/tab-column";
 import { Badge } from "@/components/ui/badge";
 import {
   CircleDotDashedIcon,
-  CopyIcon,
   Edit2Icon,
   EllipsisVerticalIcon,
   LucideTrash,
@@ -19,16 +17,16 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import clsx from "clsx";
 import Link from "next/link";
 import { ROUTE_URL } from "@/app/lib/constants/routeStrings";
-import { DeleteTodo } from "@/app/lib/actions/queries";
 import { useToast } from "@/components/ui/use-toast";
 import useLoading from "@/app/lib/hooks/useLoading";
 import { LoaderIcon } from "lucide-react";
-import { CreateForm } from "../../sprint/projects/form/create-task";
+import { CreateForm } from "@/app/ui/sprint/projects/form/create-task";
 import DialogCustom, { IDialogProps } from "../dialog";
 import ActionButton from "../button";
+import DeleteTask from "@/app/ui/sprint/projects/form/delete-task";
+import { DialogTrigger } from "@/components/ui/dialog";
 
 interface IDropdownButton {
   id: number;
@@ -37,74 +35,61 @@ interface IDropdownButton {
 const DropdownButton = ({ id }: IDropdownButton) => {
   const { toast } = useToast();
   const { isLoading, startLoading, stopLoading } = useLoading();
+  const { DialogComponent, onOpen, onClose } = DialogCustom();
 
   const actions = [
-    { name: "Edit", icon: <Edit2Icon size={13} /> },
+    { key: 1, name: "Edit", className: "", icon: <Edit2Icon size={13} /> },
     {
+      key: 2,
       name: "Delete",
+      className: "text-[red]",
       icon: <LucideTrash size={13} stroke="red" />,
     },
   ];
 
-  const onDelete = async () => {
-    if (id) {
-      startLoading();
-      try {
-        const res = await DeleteTodo(id);
-        if (res.success)
-          toast({
-            title: "Task has been deleted",
-          });
-      } catch (error) {
-        toast({
-          variant: "destructive",
-          title: "Something went wrong!",
-          description: error as React.ReactNode,
-        });
-      } finally {
-        stopLoading();
-      }
-    }
-  };
-
   return (
-    <DropdownMenu>
-      <DropdownMenuTrigger className="outline-none">
-        {isLoading ? (
-          <LoaderIcon className="animate-spin" />
-        ) : (
-          <EllipsisVerticalIcon size={16} />
-        )}
-      </DropdownMenuTrigger>
-      <DropdownMenuContent>
-        <DropdownMenuLabel>Options</DropdownMenuLabel>
-        <DropdownMenuSeparator />
-        {actions?.map((action) => {
-          const onAction = () => {
-            if (action.name === "Delete") onDelete();
-          };
+    <DialogComponent
+      dialogHeader={{
+        title: "Delete task",
+        description: `If you want to delete this task number "${id}", click the Delete button.`,
+      }}
+      content={
+        <div>
+          <DeleteTask id={id} onClose={onClose} />
+        </div>
+      }
+      context={
+        <DropdownMenu>
+          <DropdownMenuTrigger className="outline-none">
+            {isLoading ? (
+              <LoaderIcon className="animate-spin" />
+            ) : (
+              <EllipsisVerticalIcon size={16} />
+            )}
+          </DropdownMenuTrigger>
+          <DropdownMenuContent>
+            <DropdownMenuLabel>Options</DropdownMenuLabel>
+            <DropdownMenuSeparator />
 
-          return (
-            <DropdownMenuItem
-              key={action.name}
-              className="hover:bg-slate-100 cursor-pointer"
-            >
-              <div className="flex items-center gap-2" onClick={onAction}>
-                {action?.icon}
-                <span
-                  className={clsx(
-                    "",
-                    action?.name === "Delete" && "text-[red]"
-                  )}
-                >
-                  {action?.name}
-                </span>
-              </div>
-            </DropdownMenuItem>
-          );
-        })}
-      </DropdownMenuContent>
-    </DropdownMenu>
+            {actions?.map((action) => {
+              return (
+                <DialogTrigger key={action?.key} asChild>
+                  <DropdownMenuItem
+                    key={action.name}
+                    className="hover:bg-slate-100 cursor-pointer"
+                  >
+                    <div className="flex items-center gap-2">
+                      {action?.icon}
+                      <span className={action.className}>{action?.name}</span>
+                    </div>
+                  </DropdownMenuItem>
+                </DialogTrigger>
+              );
+            })}
+          </DropdownMenuContent>
+        </DropdownMenu>
+      }
+    />
   );
 };
 
@@ -182,19 +167,16 @@ const TabColumn = ({ data }: ITabColumnProps) => {
           <p className="font-semibold">{title}</p>
           <Badge>{todos?.length}</Badge>
         </div>
+        <ActionButton size={null} variant="outline" onClick={onOpen}>
+          <PlusIcon />
+        </ActionButton>
         <DialogComponent
-          dialogTrigger={
-            <ActionButton size={null} variant="outline" onClick={onOpen}>
-              <PlusIcon />
-            </ActionButton>
-          }
           dialogHeader={{
             title: "Create task",
-            description: `Create a '${title}' task`,
+            description: `Create a '${title}' task here. Click create when you're done.`,
           }}
-        >
-          <CreateForm tabId={id} handleCloseDialog={onClose} />
-        </DialogComponent>
+          content={<CreateForm tabId={id} handleCloseDialog={onClose} />}
+        />
       </div>
       <div className="w-72 border-default rounded-lg rounded-tl-none rounded-tr-none h-full">
         <Todos todos={todos} />

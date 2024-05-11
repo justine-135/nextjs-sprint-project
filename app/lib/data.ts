@@ -46,11 +46,11 @@ export async function getAllTags() {
 
 export async function getTodos(id: string) {
   try {
-    const data = await sql<ITodos>`
+    const data = await sql<ITabColumns>`
     SELECT 
     tab_columns.id,
     tab_columns.title,
-    json_agg(
+    COALESCE(json_agg(
         json_build_object(
             'id', todos.id,
             'title', todos.title,
@@ -68,11 +68,15 @@ export async function getTodos(id: string) {
                 WHERE todo_tag.todo_id = todos.id
             )
         ) ORDER BY todos.id ASC
-    ) AS todos
+    ), '[]'::json) AS todos,
+    projects.id AS project_id, -- referring to the id of projects
+    projects.name -- Selecting the project name
 FROM tab_columns
-LEFT JOIN todos ON tab_columns.id = todos.tab_id
-    AND project_id = ${id} -- Move the condition here
-GROUP BY tab_columns.id;
+LEFT JOIN projects ON tab_columns.project_id = projects.id -- Joining projects table
+LEFT JOIN todos ON tab_columns.id = todos.tab_id AND todos.project_id = projects.id -- Joining todos table
+WHERE projects.id = ${id}
+GROUP BY tab_columns.id, tab_columns.title, projects.id, projects.name; -- Grouping by projects.id and projects.name
+
     `;
     return data.rows;
   } catch (error) {

@@ -1,18 +1,11 @@
 import {
   Dialog,
-  DialogClose,
   DialogContent,
   DialogDescription,
-  DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
 import { ReactNode, useState } from "react";
-import { Button } from "@/components/ui/button";
-import { CopyIcon } from "lucide-react";
 
 interface IDialogHeader {
   title?: string;
@@ -20,9 +13,9 @@ interface IDialogHeader {
 }
 
 export interface IDialogProps {
-  dialogTrigger?: ReactNode;
   dialogHeader?: IDialogHeader;
-  children?: ReactNode;
+  content?: ReactNode;
+  context?: ReactNode; // For ContextMenu and DropdownMenu
 }
 
 export default function DialogCustom() {
@@ -37,18 +30,18 @@ export default function DialogCustom() {
   };
 
   const DialogComponent = ({
-    dialogTrigger,
     dialogHeader,
-    children,
+    content,
+    context,
   }: IDialogProps) => (
     <Dialog open={visible} onOpenChange={setVisible}>
-      <DialogTrigger asChild>{dialogTrigger}</DialogTrigger>
+      {context}
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle>{dialogHeader?.title}</DialogTitle>
           <DialogDescription>{dialogHeader?.description}</DialogDescription>
         </DialogHeader>
-        <div>{children}</div>
+        <div>{content}</div>
       </DialogContent>
     </Dialog>
   );

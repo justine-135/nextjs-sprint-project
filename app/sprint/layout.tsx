@@ -1,5 +1,4 @@
 import { SideNav } from "../ui/common/side-nav";
-// import { auth } from "@/auth";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   return (
