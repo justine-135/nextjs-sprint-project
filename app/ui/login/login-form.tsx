@@ -121,18 +121,10 @@ export default function LoginForm() {
             />
           </div>
           <div className="flex flex-col mt-5">
-            <ActionButton
-              title="Login"
-              loading={isLoading}
-              type="submit"
-              buttonType="link"
-            />
-            <Link
-              className={buttonVariants({ variant: "link" })}
-              href="/register"
-            >
-              Click here to register
-            </Link>
+            <ActionButton loading={isLoading} type="submit" buttonType="link">
+              Login
+            </ActionButton>
+            <ActionButton buttonType="link">Register</ActionButton>
           </div>
         </form>
       </Form>

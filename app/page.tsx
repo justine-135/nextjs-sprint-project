@@ -5,7 +5,9 @@ export default function Home() {
     <main className="flex flex-col items-center justify-center h-screen">
       <h1 className="text-lg font-bold mb-6">Create project</h1>
 
-      <ActionButton title="Login" href="/login" buttonType="link" />
+      <ActionButton href="/login" buttonType="link">
+        Login
+      </ActionButton>
     </main>
   );
 }

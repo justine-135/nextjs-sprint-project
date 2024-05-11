@@ -11,7 +11,9 @@ export default async function Projects({ params }: { params: { id: string } }) {
 
   return (
     <>
-      <ActionButton title="Back" href="/sprint" buttonType="link" />
+      <ActionButton href="/sprint" buttonType="link">
+        Back
+      </ActionButton>
 
       <section className="mt-small h-full">
         <TabColumns data={data} />

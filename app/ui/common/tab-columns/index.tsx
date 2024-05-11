@@ -1,10 +1,11 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { Dispatch, SetStateAction, useState } from "react";
 import { ITabColumns, ITags, ITodos } from "@/app/lib/definitions/tab-column";
 import { Badge } from "@/components/ui/badge";
 import {
   CircleDotDashedIcon,
+  CopyIcon,
   Edit2Icon,
   EllipsisVerticalIcon,
   LucideTrash,
@@ -25,15 +26,15 @@ import { DeleteTodo } from "@/app/lib/actions/queries";
 import { useToast } from "@/components/ui/use-toast";
 import useLoading from "@/app/lib/hooks/useLoading";
 import { LoaderIcon } from "lucide-react";
-import Modal from "../modal";
-import { CreateForm } from "../../sprint/main/form/create";
-import { Button } from "@/components/ui/button";
+import { CreateForm } from "../../sprint/projects/form/create-task";
+import DialogCustom, { IDialogProps } from "../dialog";
+import ActionButton from "../button";
 
-interface IActionButton {
+interface IDropdownButton {
   id: number;
 }
 
-const ActionButton = ({ id }: IActionButton) => {
+const DropdownButton = ({ id }: IDropdownButton) => {
   const { toast } = useToast();
   const { isLoading, startLoading, stopLoading } = useLoading();
 
@@ -136,7 +137,7 @@ const Todo = ({ todo }: { todo: ITodos }) => {
           <CircleDotDashedIcon size={16} />
           <span className="text-xs text-slate-500">#{taskId}</span>
         </div>
-        <ActionButton id={taskId} />
+        <DropdownButton id={taskId} />
       </div>
       <div className="my-small">
         <Link
@@ -168,17 +169,11 @@ const Todos = ({ todos }: { todos?: ITodos[] }) => {
 
 interface ITabColumnProps {
   data: ITabColumns;
-  onOpenModal: () => void;
-  setTabId: React.Dispatch<React.SetStateAction<number | undefined>>;
 }
 
-const TabColumn = ({ data, onOpenModal, setTabId }: ITabColumnProps) => {
+const TabColumn = ({ data }: ITabColumnProps) => {
   const { id, title, todos } = data;
-
-  const handleOpenModal = () => {
-    onOpenModal();
-    setTabId(id);
-  };
+  const { DialogComponent, onOpen, onClose } = DialogCustom();
 
   return (
     <>
@@ -187,9 +182,19 @@ const TabColumn = ({ data, onOpenModal, setTabId }: ITabColumnProps) => {
           <p className="font-semibold">{title}</p>
           <Badge>{todos?.length}</Badge>
         </div>
-        <Button size={null} variant="outline" onClick={handleOpenModal}>
-          <PlusIcon />
-        </Button>
+        <DialogComponent
+          dialogTrigger={
+            <ActionButton size={null} variant="outline" onClick={onOpen}>
+              <PlusIcon />
+            </ActionButton>
+          }
+          dialogHeader={{
+            title: "Create task",
+            description: `Create a '${title}' task`,
+          }}
+        >
+          <CreateForm tabId={id} handleCloseDialog={onClose} />
+        </DialogComponent>
       </div>
       <div className="w-72 border-default rounded-lg rounded-tl-none rounded-tr-none h-full">
         <Todos todos={todos} />
@@ -199,23 +204,17 @@ const TabColumn = ({ data, onOpenModal, setTabId }: ITabColumnProps) => {
 };
 
 export const TabColumns = ({ data }: { data?: ITabColumns[] }) => {
-  const [tabId, setTabId] = useState<number>();
-  const { onOpen, ModalComponent, onClose } = Modal();
-
   return (
     <>
       <ul className="flex gap-6 fixed h-[84%]">
         {data?.map((col) => {
           return (
             <li className="flex-shrink-0" key={col.id}>
-              <TabColumn data={col} onOpenModal={onOpen} setTabId={setTabId} />
+              <TabColumn data={col} />
             </li>
           );
         })}
       </ul>
-      <ModalComponent title="Add todo">
-        <CreateForm tabId={tabId} afterClose={onClose} />
-      </ModalComponent>
     </>
   );
 };

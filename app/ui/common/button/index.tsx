@@ -2,8 +2,8 @@
 import useLoading from "@/app/lib/hooks/useLoading";
 import { Button, ButtonProps, buttonVariants } from "@/components/ui/button";
 import { LoaderIcon } from "lucide-react";
-import Link from "next/link";
-import React from "react";
+import React, { ReactNode } from "react";
+import { useRouter } from "next/navigation";
 
 type ButtonType = "default" | "link";
 
@@ -14,8 +14,8 @@ export type LinkVariants =
   | "ghost"
   | "link";
 
-interface ILoaderButton extends ButtonProps {
-  title: string;
+interface IActionButton extends ButtonProps {
+  children: ReactNode;
   loading?: boolean;
   buttonType?: ButtonType;
   href?: string;
@@ -23,31 +23,34 @@ interface ILoaderButton extends ButtonProps {
 }
 
 export default function ActionButton({
-  title,
+  children,
   loading,
   buttonType = "default",
   href,
   linkVariant = "default",
   ...props
-}: ILoaderButton) {
+}: IActionButton) {
   const { isLoading: isLoadingRedirect, startLoading: startLoadingRedirect } =
     useLoading();
 
+  const router = useRouter();
+
+  const onRedirect = () => {
+    startLoadingRedirect();
+    router.push(href || "");
+  };
+
   if (buttonType === "link")
     return (
-      <Link
-        className={buttonVariants({ variant: linkVariant })}
-        href={href || ""}
-        onClick={startLoadingRedirect}
-      >
+      <Button {...props} disabled={isLoadingRedirect} onClick={onRedirect}>
         {isLoadingRedirect && <LoaderIcon className="animate-spin mr-2" />}{" "}
-        {title}
-      </Link>
+        {children}
+      </Button>
     );
 
   return (
     <Button {...props} disabled={loading}>
-      {loading && <LoaderIcon className="animate-spin mr-2" />} {title}
+      {loading && <LoaderIcon className="animate-spin mr-2" />} {children}
     </Button>
   );
 }

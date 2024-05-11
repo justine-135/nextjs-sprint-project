@@ -7,7 +7,7 @@ export default async function Projects() {
   const data = await GetProjects();
 
   return (
-    <main className="container mx-auto py-10">
+    <main className="">
       <DataTable columns={columns} data={data || []} />
     </main>
   );

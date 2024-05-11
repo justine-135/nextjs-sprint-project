@@ -24,10 +24,10 @@ import ActionButton from "@/app/ui/common/button";
 
 interface ICreateForm {
   tabId?: number;
-  afterClose: () => void;
+  handleCloseDialog?: () => void;
 }
 
-export const CreateForm = ({ tabId, afterClose }: ICreateForm) => {
+export const CreateForm = ({ tabId, handleCloseDialog }: ICreateForm) => {
   const router = usePathname();
 
   const lastSlashIndex = router.lastIndexOf("/");
@@ -91,72 +91,75 @@ export const CreateForm = ({ tabId, afterClose }: ICreateForm) => {
       })
       .finally(() => {
         stopLoading();
-        if (!isLoading) afterClose();
+        if (!isLoading) handleCloseDialog?.();
       });
   };
 
   return (
-    <Form {...form}>
-      <form
-        onSubmit={(e) => {
-          onSubmit();
-          e.preventDefault();
-        }}
-      >
-        <div className="p-2 space-y-2">
-          <FormField
-            control={form.control}
-            name="title"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Add title</FormLabel>
-                <FormControl>
-                  <Input placeholder="shadcn" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="content"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Add content</FormLabel>
-                <FormControl>
-                  <Textarea
-                    placeholder="Tell us a little bit about yourself"
-                    // className="resize-none"
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <div className="flex gap-1">
-            <ul className="flex gap-1">
-              {selectedTags?.map((tag, key) => {
-                const name = tag.split(TAG_SEPARATOR)[1];
-                return (
-                  <li key={key}>
-                    <Badge className="flex gap-1 items-center">
-                      {name} <X onClick={() => onTagRemove(tag)} size={13} />
-                    </Badge>
-                  </li>
-                );
-              })}
-            </ul>
-            <SelectTags onTagSelect={onTagSelect} />
+    <>
+      <Form {...form}>
+        <form
+          onSubmit={(e) => {
+            onSubmit();
+            e.preventDefault();
+          }}
+        >
+          <div className="space-y-2">
+            <FormField
+              control={form.control}
+              name="title"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Add title</FormLabel>
+                  <FormControl>
+                    <Input placeholder="shadcn" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="content"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Add content</FormLabel>
+                  <FormControl>
+                    <Textarea
+                      placeholder="Tell us a little bit about yourself"
+                      // className="resize-none"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <div className="flex gap-1">
+              <ul className="flex gap-1">
+                {selectedTags?.map((tag, key) => {
+                  const name = tag.split(TAG_SEPARATOR)[1];
+                  return (
+                    <li key={key}>
+                      <Badge className="flex gap-1 items-center">
+                        {name} <X onClick={() => onTagRemove(tag)} size={13} />
+                      </Badge>
+                    </li>
+                  );
+                })}
+              </ul>
+              <SelectTags onTagSelect={onTagSelect} />
+            </div>
           </div>
-        </div>
-        <hr />
-        <div className="flex p-2">
-          <div className="ml-auto">
-            <ActionButton title="Add" type="submit" loading={isLoading} />
+          <div className="flex">
+            <div className="ml-auto">
+              <ActionButton type="submit" loading={isLoading}>
+                Add
+              </ActionButton>
+            </div>
           </div>
-        </div>
-      </form>
-    </Form>
+        </form>
+      </Form>
+    </>
   );
 };

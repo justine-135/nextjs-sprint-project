@@ -49,7 +49,9 @@ export const columns: ColumnDef<IProjects>[] = [
     cell: ({ cell }) => {
       const { name, id } = cell.row.original;
       return (
-        <ActionButton title={name} href={`sprint/${id}`} buttonType="link" />
+        <ActionButton href={`sprint/${id}`} buttonType="link">
+          {name}
+        </ActionButton>
       );
     },
   },

@@ -9,9 +9,10 @@ export default function TodoDetail({ data }: { data?: ITodos }) {
       <div>
         <ActionButton
           buttonType="link"
-          title="Back to board"
           href={`/${ROUTE_URL.SPRINT}/pane/${data?.id}`}
-        />
+        >
+          Back to board
+        </ActionButton>
       </div>
       <div className="flex items-start gap-12 mt-10">
         <section className="p-md rounded border-default w-9/12">
