@@ -1,3 +1,5 @@
+import { QueryResultRow } from "pg";
+
 export interface ITags {
   id: number;
   type: number;
@@ -11,12 +13,22 @@ export interface ITodos {
   tags: ITags[];
 }
 
-export interface ITabColumns {
+export interface ITabData {
   id: number;
   title: string;
   todos?: ITodos[] | undefined;
   name: string;
   project_id: string;
+}
+
+export interface ITabProjectData {
+  name: string;
+  id: string;
+}
+
+export interface ITodosResponse {
+  result: ITabData[];
+  project: ITabProjectData;
 }
 
 export interface SeedTabColumns {

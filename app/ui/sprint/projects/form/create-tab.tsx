@@ -43,8 +43,8 @@ export default function CreateTabForm({ id, onClose }: ICreateTabForm) {
         form.reset();
         if (success)
           toast({
-            title: "Task created!",
-            description: "New task has been created successfully.",
+            title: "Tab created!",
+            description: "New tab has been created successfully.",
           });
       })
       .catch((error) => {
@@ -52,7 +52,7 @@ export default function CreateTabForm({ id, onClose }: ICreateTabForm) {
           toast({
             variant: "destructive",
             title: "Something went wrong!",
-            description: "Your task is not created.",
+            description: "Your tab is not created.",
           });
       })
       .finally(() => {

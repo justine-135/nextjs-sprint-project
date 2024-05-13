@@ -1,6 +1,11 @@
 "use client";
 
-import { ITabColumns, ITags, ITodos } from "@/app/lib/definitions/tab-column";
+import {
+  ITabColumns,
+  ITabData,
+  ITags,
+  ITodos,
+} from "@/app/lib/definitions/tab-column";
 import { Badge } from "@/components/ui/badge";
 import {
   CircleDotDashedIcon,
@@ -148,7 +153,7 @@ const Todos = ({ todos }: { todos?: ITodos[] }) => {
 };
 
 interface ITabColumnProps {
-  data: ITabColumns;
+  data: ITabData;
 }
 
 const TabColumn = ({ data }: ITabColumnProps) => {

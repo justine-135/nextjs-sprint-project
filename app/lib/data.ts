@@ -1,7 +1,13 @@
 "use server";
 
 import { sql } from "@vercel/postgres";
-import { ITabColumns, ITags, ITodos } from "./definitions/tab-column";
+import {
+  ITabData,
+  ITabProjectData,
+  ITags,
+  ITodos,
+  ITodosResponse,
+} from "./definitions/tab-column";
 import { IProjects } from "./definitions/projects";
 
 export async function GetProjects() {
@@ -16,7 +22,7 @@ export async function GetProjects() {
 
 export async function getTabColumns() {
   try {
-    const data = await sql<ITabColumns>`SELECT * FROM tab_columns;`;
+    const data = await sql<ITabData[]>`SELECT * FROM tab_columns;`;
 
     return data.rows;
   } catch (error) {
@@ -44,9 +50,11 @@ export async function getAllTags() {
   }
 }
 
-export async function getTodos(id: string) {
+export async function getTodos(
+  id: string
+): Promise<ITodosResponse | undefined> {
   try {
-    const data = await sql<ITabColumns>`
+    const data = await sql<ITabData>`
     SELECT 
     tab_columns.id,
     tab_columns.title,
@@ -76,9 +84,17 @@ LEFT JOIN projects ON tab_columns.project_id = projects.id -- Joining projects t
 LEFT JOIN todos ON tab_columns.id = todos.tab_id AND todos.project_id = projects.id -- Joining todos table
 WHERE projects.id = ${id}
 GROUP BY tab_columns.id, tab_columns.title, projects.id, projects.name; -- Grouping by projects.id and projects.name
-
     `;
-    return data.rows;
+
+    const title = await sql<ITabProjectData>`
+    SELECT name, id FROM projects WHERE id = ${id};
+    `;
+
+    return {
+      result: data.rows,
+      project: title.rows[0],
+    };
+    // return data.rows;
   } catch (error) {
     console.error("Database Error: GET todos", error);
   }
