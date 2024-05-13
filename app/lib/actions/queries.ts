@@ -123,3 +123,45 @@ export async function VerifyPassword(pwd: string, hashPwd: string) {
   const isCorrect = bcrypt.compare(pwd, hashPwd);
   return isCorrect;
 }
+
+interface ICreateTabProps {
+  project_id?: string;
+  title: string;
+}
+
+export async function CreateTab({ project_id, title }: ICreateTabProps) {
+  try {
+    await sql`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`;
+    // Create the "users" table if it doesn't exist
+    await sql`
+        CREATE TABLE IF NOT EXISTS tab_columns (
+          id SERIAL PRIMARY KEY,
+          project_id UUID REFERENCES projects (id) ON DELETE CASCADE,
+          title VARCHAR(255) NOT NULL,
+          created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+          updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        );
+      `;
+
+    console.log(`Created "tab_columns" table`);
+
+    // Insert data into the "users" table
+    await sql`
+      INSERT INTO tab_columns (project_id, title)
+      VALUES (${project_id}, ${title})
+      ON CONFLICT (id) DO NOTHING;
+        `;
+
+    revalidatePath("/sprint");
+
+    return {
+      success: 1,
+      message: "Success",
+    };
+  } catch (error) {
+    return {
+      success: 0,
+      message: "Failed",
+    };
+  }
+}

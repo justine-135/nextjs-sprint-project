@@ -19,22 +19,18 @@ import {
 } from "@/components/ui/dropdown-menu";
 import Link from "next/link";
 import { ROUTE_URL } from "@/app/lib/constants/routeStrings";
-import { useToast } from "@/components/ui/use-toast";
-import useLoading from "@/app/lib/hooks/useLoading";
-import { LoaderIcon } from "lucide-react";
-import { CreateForm } from "@/app/ui/sprint/projects/form/create-task";
+import { CreateTaskForm } from "@/app/ui/sprint/projects/form/create-task";
 import DialogCustom, { IDialogProps } from "../dialog";
 import ActionButton from "../button";
 import DeleteTask from "@/app/ui/sprint/projects/form/delete-task";
 import { DialogTrigger } from "@/components/ui/dialog";
+import CreateTab from "../../sprint/projects/form/create-tab";
 
 interface IDropdownButton {
   id: number;
 }
 
 const DropdownButton = ({ id }: IDropdownButton) => {
-  const { toast } = useToast();
-  const { isLoading, startLoading, stopLoading } = useLoading();
   const { DialogComponent, onOpen, onClose } = DialogCustom();
 
   const actions = [
@@ -44,6 +40,7 @@ const DropdownButton = ({ id }: IDropdownButton) => {
       name: "Delete",
       className: "text-[red]",
       icon: <LucideTrash size={13} stroke="red" />,
+      action: onOpen,
     },
   ];
 
@@ -61,11 +58,7 @@ const DropdownButton = ({ id }: IDropdownButton) => {
       context={
         <DropdownMenu>
           <DropdownMenuTrigger className="outline-none">
-            {isLoading ? (
-              <LoaderIcon className="animate-spin" />
-            ) : (
-              <EllipsisVerticalIcon size={16} />
-            )}
+            <EllipsisVerticalIcon size={16} />
           </DropdownMenuTrigger>
           <DropdownMenuContent>
             <DropdownMenuLabel>Options</DropdownMenuLabel>
@@ -125,12 +118,14 @@ const Todo = ({ todo }: { todo: ITodos }) => {
         <DropdownButton id={taskId} />
       </div>
       <div className="my-small">
-        <Link
-          href={`/${ROUTE_URL.SPRINT}/pane/${taskId}`}
+        <p className="break-all hover:text-blue-600 hover:underline">{title}</p>
+        {/* <ActionButton
           className="hover:text-blue-600 hover:underline"
+          buttonType="link"
+          href={`/${ROUTE_URL.SPRINT}/pane/${taskId}`}
         >
           {title}
-        </Link>
+        </ActionButton> */}
       </div>
       <TagComponent tags={tags} />
     </div>
@@ -161,7 +156,7 @@ const TabColumn = ({ data }: ITabColumnProps) => {
   const { DialogComponent, onOpen, onClose } = DialogCustom();
 
   return (
-    <>
+    <div className="">
       <div className="flex items-center justify-between p-small border-default border-b-0 rounded-lg rounded-bl-none rounded-br-none">
         <div className="flex items-center gap-1">
           <p className="font-semibold">{title}</p>
@@ -175,28 +170,46 @@ const TabColumn = ({ data }: ITabColumnProps) => {
             title: "Create task",
             description: `Create a '${title}' task here. Click create when you're done.`,
           }}
-          content={<CreateForm tabId={id} handleCloseDialog={onClose} />}
+          content={<CreateTaskForm tabId={id} handleCloseDialog={onClose} />}
         />
       </div>
-      <div className="w-72 border-default rounded-lg rounded-tl-none rounded-tr-none h-full">
+      <div className="h-[700px] w-64 border-default rounded-lg rounded-tl-none rounded-tr-none overflow-auto">
         <Todos todos={todos} />
       </div>
-    </>
+    </div>
   );
 };
 
-export const TabColumns = ({ data }: { data?: ITabColumns[] }) => {
+interface ITabColumnsProps {
+  data?: ITabColumns[];
+  projectId?: string;
+}
+
+export const TabColumns = ({ data, projectId }: ITabColumnsProps) => {
+  const { onOpen, onClose, DialogComponent } = DialogCustom();
+
   return (
-    <>
-      <ul className="flex gap-6 fixed h-[84%]">
+    <div className="flex items-start gap-6 h-[90%]">
+      <ul className="flex gap-6 h-full overflow-x">
         {data?.map((col) => {
           return (
-            <li className="flex-shrink-0" key={col.id}>
+            <li className="flex-shrink-0 h-full" key={col.id}>
               <TabColumn data={col} />
             </li>
           );
         })}
       </ul>
-    </>
+      <ActionButton variant="outline" onClick={onOpen}>
+        Add tab
+        <PlusIcon />
+      </ActionButton>
+      <DialogComponent
+        dialogHeader={{
+          title: "Create task",
+          description: `Create a task here. Click create when you're done.`,
+        }}
+        content={<CreateTab id={projectId} onClose={onClose} />}
+      />
+    </div>
   );
 };

@@ -22,12 +22,15 @@ import { useToast } from "@/components/ui/use-toast";
 import { usePathname } from "next/navigation";
 import ActionButton from "@/app/ui/common/button";
 
-interface ICreateForm {
+interface ICreateTaskForm {
   tabId?: number;
   handleCloseDialog?: () => void;
 }
 
-export const CreateForm = ({ tabId, handleCloseDialog }: ICreateForm) => {
+export const CreateTaskForm = ({
+  tabId,
+  handleCloseDialog,
+}: ICreateTaskForm) => {
   const router = usePathname();
 
   const lastSlashIndex = router.lastIndexOf("/");
