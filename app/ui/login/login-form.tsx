@@ -19,6 +19,7 @@ import { useToast } from "@/components/ui/use-toast";
 import { INVALID_CREDENTIALS } from "@/app/lib/constants/auth";
 import useLoading from "@/app/lib/hooks/useLoading";
 import ActionButton from "../common/button";
+import FormItemText from "../common/form-item/input";
 
 interface IFormParams {
   email: string;
@@ -85,46 +86,29 @@ export default function LoginForm() {
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)}>
           <div className="flex flex-col gap-4 ">
-            <FormField
-              control={form.control}
+            <FormItemText
+              form={form}
               name="email"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Email</FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder="Enter your email"
-                      type="email"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage>{fieldErrors?.email?._errors[0]}</FormMessage>
-                </FormItem>
-              )}
+              label="Email"
+              placeholder="Enter your email"
+              message={fieldErrors?.email?._errors[0]}
             />
-            <FormField
-              control={form.control}
+            <FormItemText
+              form={form}
+              type="password"
               name="password"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Password</FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder="Enter your password"
-                      type="password"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage>{fieldErrors?.password?._errors[0]}</FormMessage>
-                </FormItem>
-              )}
+              label="Password"
+              placeholder="Enter your password"
+              message={fieldErrors?.password?._errors[0]}
             />
           </div>
-          <div className="flex flex-col mt-5">
-            <ActionButton loading={isLoading} type="submit" buttonType="link">
+          <div className="flex flex-col gap-2 mt-5">
+            <ActionButton loading={isLoading} type="submit">
               Login
             </ActionButton>
-            <ActionButton buttonType="link">Register</ActionButton>
+            <ActionButton buttonType="link" variant="link" href="/register">
+              Click here to register
+            </ActionButton>
           </div>
         </form>
       </Form>

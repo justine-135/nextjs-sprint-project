@@ -9,7 +9,6 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useState } from "react";
 import { Badge } from "@/components/ui/badge";
@@ -21,6 +20,8 @@ import useLoading from "@/app/lib/hooks/useLoading";
 import { useToast } from "@/components/ui/use-toast";
 import { usePathname } from "next/navigation";
 import ActionButton from "@/app/ui/common/button";
+import FormItemText from "@/app/ui/common/form-item/input";
+import FormItemTextArea from "@/app/ui/common/form-item/textarea";
 
 interface ICreateTaskForm {
   tabId?: number;
@@ -109,35 +110,17 @@ export const CreateTaskForm = ({
           }}
         >
           <div className="space-y-2">
-            <FormField
-              control={form.control}
+            <FormItemText
+              form={form}
               name="title"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Add title</FormLabel>
-                  <FormControl>
-                    <Input placeholder="shadcn" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
+              label="Task name"
+              placeholder="Enter task name"
             />
-            <FormField
-              control={form.control}
+            <FormItemTextArea
+              form={form}
               name="content"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Add content</FormLabel>
-                  <FormControl>
-                    <Textarea
-                      placeholder="Tell us a little bit about yourself"
-                      // className="resize-none"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
+              label="Add content"
+              placeholder="Tell us more information about this task"
             />
             <div className="flex gap-1">
               <ul className="flex gap-1">

@@ -16,6 +16,7 @@ export interface IDialogProps {
   dialogHeader?: IDialogHeader;
   content?: ReactNode;
   context?: ReactNode; // For ContextMenu and DropdownMenu
+  contextClassName?: string;
 }
 
 export default function DialogCustom() {
@@ -33,10 +34,11 @@ export default function DialogCustom() {
     dialogHeader,
     content,
     context,
+    contextClassName = "",
   }: IDialogProps) => (
     <Dialog open={visible} onOpenChange={setVisible}>
       {context}
-      <DialogContent className="sm:max-w-md">
+      <DialogContent className={contextClassName}>
         <DialogHeader>
           <DialogTitle>{dialogHeader?.title}</DialogTitle>
           <DialogDescription>{dialogHeader?.description}</DialogDescription>

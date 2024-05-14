@@ -26,14 +26,23 @@ import {
 } from "@/components/ui/table";
 import ActionButton from "../button";
 
+interface IButtonOptions {
+  primaryAction?: {
+    name: string;
+    action: () => void;
+  };
+}
+
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
+  buttonOptions?: IButtonOptions;
 }
 
 export function DataTable<TData, TValue>({
   columns,
   data,
+  buttonOptions,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
@@ -65,7 +74,11 @@ export function DataTable<TData, TValue>({
           }
           className="max-w-sm"
         />
-        <ActionButton>Create project</ActionButton>
+        {buttonOptions?.primaryAction && (
+          <ActionButton onClick={buttonOptions?.primaryAction?.action}>
+            {buttonOptions?.primaryAction?.name}
+          </ActionButton>
+        )}
       </div>
       <div className="rounded-md border">
         <Table>

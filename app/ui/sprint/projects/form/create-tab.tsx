@@ -1,18 +1,11 @@
 import { Form } from "@/components/ui/form";
 import React from "react";
 import { useForm } from "react-hook-form";
-import {
-  FormField,
-  FormItem,
-  FormLabel,
-  FormControl,
-  FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
 import ActionButton from "@/app/ui/common/button";
 import useLoading from "@/app/lib/hooks/useLoading";
 import { CreateTab } from "@/app/lib/actions/queries";
 import { useToast } from "@/components/ui/use-toast";
+import FormItemText from "@/app/ui/common/form-item/input";
 
 interface ICreateTabForm {
   id?: string;
@@ -71,18 +64,11 @@ export default function CreateTabForm({ id, onClose }: ICreateTabForm) {
           }}
         >
           <div className="space-y-2">
-            <FormField
-              control={form.control}
+            <FormItemText
+              form={form}
               name="title"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Add title</FormLabel>
-                  <FormControl>
-                    <Input placeholder="shadcn" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
+              label="Tab title"
+              placeholder="Enter tab name"
             />
           </div>
           <div className="flex mt-4">

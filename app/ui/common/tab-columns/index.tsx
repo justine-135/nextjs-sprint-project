@@ -1,11 +1,6 @@
 "use client";
 
-import {
-  ITabColumns,
-  ITabData,
-  ITags,
-  ITodos,
-} from "@/app/lib/definitions/tab-column";
+import { ITabData, ITags, ITodos } from "@/app/lib/definitions/tab-column";
 import { Badge } from "@/components/ui/badge";
 import {
   CircleDotDashedIcon,
@@ -30,6 +25,7 @@ import ActionButton from "../button";
 import DeleteTask from "@/app/ui/sprint/projects/form/delete-task";
 import { DialogTrigger } from "@/components/ui/dialog";
 import CreateTab from "../../sprint/projects/form/create-tab";
+import { useMemo } from "react";
 
 interface IDropdownButton {
   id: number;
@@ -142,6 +138,7 @@ const Todos = ({ todos }: { todos?: ITodos[] }) => {
   return (
     <ul className="flex flex-col gap-2 p-small overflow-auto h-full ">
       {todos?.map((todo) => {
+        console.log(todo);
         return (
           <li key={todo?.id}>
             <Todo todo={todo} />
@@ -160,12 +157,17 @@ const TabColumn = ({ data }: ITabColumnProps) => {
   const { id, title, todos } = data;
   const { DialogComponent, onOpen, onClose } = DialogCustom();
 
+  const todosCount = useMemo(() => {
+    if (todos?.[0]?.id === null) return 0;
+    return todos?.length;
+  }, [todos]);
+
   return (
-    <div className="">
+    <>
       <div className="flex items-center justify-between p-small border-default border-b-0 rounded-lg rounded-bl-none rounded-br-none">
         <div className="flex items-center gap-1">
           <p className="font-semibold">{title}</p>
-          <Badge>{todos?.length}</Badge>
+          <Badge>{todosCount}</Badge>
         </div>
         <ActionButton size={null} variant="outline" onClick={onOpen}>
           <PlusIcon />
@@ -181,12 +183,12 @@ const TabColumn = ({ data }: ITabColumnProps) => {
       <div className="h-[700px] w-64 border-default rounded-lg rounded-tl-none rounded-tr-none overflow-auto">
         <Todos todos={todos} />
       </div>
-    </div>
+    </>
   );
 };
 
 interface ITabColumnsProps {
-  data?: ITabColumns[];
+  data?: ITabData[];
   projectId?: string;
 }
 
