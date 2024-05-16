@@ -28,7 +28,7 @@ async function initTab() {
   return insertTabColumns.rows[0].id;
 }
 
-export async function createTodo(payload: ICreateTodoForm) {
+export async function CreateTodo(payload: ICreateTodoForm) {
   const { project_id, title, content, tabId, tagIds } = payload;
 
   let todoInserted = false;
@@ -149,6 +149,51 @@ export async function CreateTab({ project_id, title }: ICreateTabProps) {
     await sql`
       INSERT INTO tab_columns (project_id, title)
       VALUES (${project_id}, ${title})
+      ON CONFLICT (id) DO NOTHING;
+        `;
+
+    revalidatePath("/sprint");
+
+    return {
+      success: 1,
+      message: "Success",
+    };
+  } catch (error) {
+    return {
+      success: 0,
+      message: "Failed",
+    };
+  }
+}
+
+interface ICreateProjectsProps {
+  name: string;
+  description: string;
+}
+
+export async function CreateProject({
+  name,
+  description,
+}: ICreateProjectsProps) {
+  try {
+    await sql`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`;
+    // Create the "users" table if it doesn't exist
+    await sql`
+        CREATE TABLE IF NOT EXISTS projects (
+          id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+          name VARCHAR(255),
+          description TEXT,
+          created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+          updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        );
+      `;
+
+    console.log(`Created "tab_columns" table`);
+
+    // Insert data into the "users" table
+    await sql`
+      INSERT INTO projects (name, description)
+      VALUES (${name}, ${description})
       ON CONFLICT (id) DO NOTHING;
         `;
 

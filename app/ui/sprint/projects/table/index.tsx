@@ -6,6 +6,7 @@ import React from "react";
 import { columns } from "./columns";
 import DialogCustom from "@/app/ui/common/dialog";
 import CreateProjectForm from "../form/create-project";
+import { Toaster } from "@/components/ui/toaster";
 
 interface IProjectsTableProps {
   data: IProjects[];
@@ -28,9 +29,10 @@ export default function ProjectsTable({ data }: IProjectsTableProps) {
           title: "Create a project",
           description: `Create a project. Click create when you're done.`,
         }}
-        content={<CreateProjectForm />}
+        content={<CreateProjectForm handleCloseDialog={onClose} />}
         contextClassName="w-[1000px] max-w-none"
       />
+      <Toaster />
     </>
   );
 }

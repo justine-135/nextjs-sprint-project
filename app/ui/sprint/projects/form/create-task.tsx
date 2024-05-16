@@ -14,7 +14,7 @@ import { useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { X } from "lucide-react";
 import { SelectTags } from "./select-tags";
-import { createTodo } from "@/app/lib/actions/queries";
+import { CreateTodo } from "@/app/lib/actions/queries";
 import { TAG_SEPARATOR } from "@/app/lib/constants/utils";
 import useLoading from "@/app/lib/hooks/useLoading";
 import { useToast } from "@/components/ui/use-toast";
@@ -77,7 +77,7 @@ export const CreateTaskForm = ({
       project_id: projectId,
     };
 
-    createTodo(payload)
+    CreateTodo(payload)
       .then((success) => {
         form.reset();
         if (success)

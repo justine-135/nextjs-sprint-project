@@ -36,8 +36,12 @@ export default function DeleteTask({ id, onClose }: IDeleteTaskProps) {
   };
 
   return (
-    <ActionButton onClick={onDelete} loading={isLoading}>
-      Delete
-    </ActionButton>
+    <div className="flex">
+      <div className="ml-auto">
+        <ActionButton onClick={onDelete} loading={isLoading}>
+          Delete
+        </ActionButton>
+      </div>
+    </div>
   );
 }

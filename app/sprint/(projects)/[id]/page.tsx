@@ -12,5 +12,5 @@ export default async function ProjectPage({
   const { id } = params;
   const data = await GetProject(id);
 
-  return <ProjectComponent data={data} />;
+  return <ProjectComponent data={data} projectId={id} />;
 }

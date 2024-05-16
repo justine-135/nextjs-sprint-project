@@ -1,25 +1,25 @@
 import React from "react";
-import {
-  Form,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormControl,
-  FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
+import { Form } from "@/components/ui/form";
 import ActionButton from "@/app/ui/common/button";
 import { useForm, UseFormReturn } from "react-hook-form";
 import FormItemText from "@/app/ui/common/form-item/input";
 import FormItemTextArea from "@/app/ui/common/form-item/textarea";
+import { CreateProject } from "@/app/lib/actions/queries";
+import useLoading from "@/app/lib/hooks/useLoading";
+import { useToast } from "@/components/ui/use-toast";
+
+interface ICreateProjectFormProps {
+  handleCloseDialog: () => void;
+}
 
 interface IFormParams {
   name: string;
   description: string;
 }
 
-export default function CreateProjectForm() {
+export default function CreateProjectForm({
+  handleCloseDialog,
+}: ICreateProjectFormProps) {
   const form = useForm({
     defaultValues: {
       name: "",
@@ -27,8 +27,34 @@ export default function CreateProjectForm() {
     },
   });
 
+  const { toast } = useToast();
+
+  const { isLoading, startLoading, stopLoading } = useLoading();
+
   const onSubmit = (data: IFormParams) => {
-    console.log(data);
+    startLoading();
+
+    CreateProject(data)
+      .then((success) => {
+        form.reset();
+        if (success)
+          toast({
+            title: "Project created!",
+            description: "New project has been created successfully.",
+          });
+      })
+      .catch((error) => {
+        if (error)
+          toast({
+            variant: "destructive",
+            title: "Something went wrong!",
+            description: "Project is not created.",
+          });
+      })
+      .finally(() => {
+        stopLoading();
+        if (!isLoading) handleCloseDialog();
+      });
   };
 
   return (
@@ -51,7 +77,9 @@ export default function CreateProjectForm() {
           </div>
           <div className="flex mt-4">
             <div className="ml-auto">
-              <ActionButton type="submit">Add</ActionButton>
+              <ActionButton type="submit" loading={isLoading}>
+                Create
+              </ActionButton>
             </div>
           </div>
         </form>
