@@ -50,7 +50,7 @@ export async function getAllTags() {
   }
 }
 
-export async function getTodos(
+export async function GetProject(
   id: string
 ): Promise<ITodosResponse | undefined> {
   try {

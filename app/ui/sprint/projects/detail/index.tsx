@@ -1,33 +1,23 @@
-import { ROUTE_URL } from "@/app/lib/constants/routeStrings";
-import { ITodos } from "@/app/lib/definitions/tab-column";
-import { Textarea } from "@/components/ui/textarea";
-import ActionButton from "@/app/ui/common/button";
+import { ITodosResponse } from "@/app/lib/definitions/tab-column";
+import BackButton from "@/app/ui/common/button/backButton";
+import { TabColumns } from "@/app/ui/common/tab-columns";
+import { Toaster } from "@/components/ui/toaster";
 
-export default function TodoDetail({ data }: { data?: ITodos }) {
+export default function ProjectComponent({
+  data,
+}: {
+  data?: ITodosResponse | undefined;
+}) {
   return (
-    <div>
-      <div>
-        <ActionButton
-          buttonType="link"
-          href={`/${ROUTE_URL.SPRINT}/pane/${data?.id}`}
-        >
-          Back to board
-        </ActionButton>
+    <>
+      <div className="flex items-center gap-2">
+        <BackButton href="/sprint" />
+        <h1 className="font-semibold text-xl">{data?.project?.name}</h1>
       </div>
-      <div className="flex items-start gap-12 mt-10">
-        <section className="p-md rounded border-default w-9/12">
-          <h1 className="font-medium text-3xl">
-            {data?.title} <span>[{data?.id}]</span>
-          </h1>
-          <section className="flex mt-6">
-            <div className="h-12 w-12 min-w-12 rounded-full bg-orange-500 mr-2" />
-            <Textarea defaultValue={data?.content} />
-          </section>
-        </section>
-        <aside className="border-default rounded p-md flex-shrink w-1/4">
-          Aside
-        </aside>
-      </div>
-    </div>
+      <section className="mt-small overflow-x-auto overflow-y-hidden">
+        <TabColumns data={data?.result} projectId={data?.project?.id} />
+      </section>
+      <Toaster />
+    </>
   );
 }
