@@ -15,7 +15,7 @@ import { Badge } from "@/components/ui/badge";
 import { X } from "lucide-react";
 import { SelectTags } from "./select-tags";
 import { CreateTodo } from "@/app/lib/actions/queries";
-import { TAG_SEPARATOR } from "@/app/lib/constants/utils";
+import { TAG_SEPARATOR } from "@/app/constants/utils";
 import useLoading from "@/app/lib/hooks/useLoading";
 import { useToast } from "@/components/ui/use-toast";
 import { usePathname } from "next/navigation";

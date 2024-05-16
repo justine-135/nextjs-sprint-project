@@ -16,7 +16,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { z, ZodFormattedError } from "zod";
 import { useToast } from "@/components/ui/use-toast";
-import { INVALID_CREDENTIALS } from "@/app/lib/constants/auth";
+import { INVALID_CREDENTIALS } from "@/app/constants/auth";
 import useLoading from "@/app/lib/hooks/useLoading";
 import ActionButton from "../common/button";
 import FormItemText from "../common/form-item/input";

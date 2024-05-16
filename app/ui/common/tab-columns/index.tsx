@@ -18,7 +18,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import Link from "next/link";
-import { ROUTE_URL } from "@/app/lib/constants/routeStrings";
+import { ROUTE_URL } from "@/app/constants/routeStrings";
 import { CreateTaskForm } from "@/app/ui/sprint/projects/form/create-task";
 import DialogCustom, { IDialogProps } from "../dialog";
 import ActionButton from "../button";

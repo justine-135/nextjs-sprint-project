@@ -1,7 +1,7 @@
 import React, { ReactNode } from "react";
 import { X } from "lucide-react";
 import Link from "next/link";
-import { ROUTE_URL } from "@/app/lib/constants/routeStrings";
+import { ROUTE_URL } from "@/app/constants/routeStrings";
 
 interface IPaneProps {
   title?: string;
