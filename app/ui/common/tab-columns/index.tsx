@@ -24,17 +24,19 @@ import DialogCustom, { IDialogProps } from "../dialog";
 import ActionButton from "../button";
 import DeleteTask from "@/app/ui/sprint/projects/form/delete-task";
 import { DialogTrigger } from "@/components/ui/dialog";
-import CreateTab from "../../sprint/projects/form/create-tab";
-import { useMemo, useState } from "react";
-import EditTask from "../../sprint/projects/form/edit-task";
+import CreateTab from "@/app/ui/sprint/projects/form/create-tab";
+import { useContext, useMemo, useState } from "react";
+import EditTask from "@/app/ui/sprint/projects/form/edit-task";
+import { ProjectContext } from "@/app/ui/sprint/projects/detail";
 
 interface IDropdownButton {
   id: number;
-  projectId: string;
 }
 
-const DropdownButton = ({ id, projectId }: IDropdownButton) => {
-  const { DialogComponent, onOpen, onClose } = DialogCustom();
+const DropdownButton = ({ id }: IDropdownButton) => {
+  const { DialogComponent, onClose } = DialogCustom();
+
+  const projectId = useContext(ProjectContext);
 
   const [dialogData, setDialogData] = useState({
     header: {
@@ -92,22 +94,18 @@ const DropdownButton = ({ id, projectId }: IDropdownButton) => {
 
             {actions?.map((action) => {
               return (
-                <>
-                  <DialogTrigger key={action?.key} asChild>
-                    <DropdownMenuItem
-                      key={action?.name}
-                      className="hover:bg-slate-100 cursor-pointer"
-                      onClick={action?.action}
-                    >
-                      <div className="flex items-center gap-2">
-                        {action?.icon}
-                        <span className={action?.className}>
-                          {action?.name}
-                        </span>
-                      </div>
-                    </DropdownMenuItem>
-                  </DialogTrigger>
-                </>
+                <DialogTrigger key={action?.key} asChild>
+                  <DropdownMenuItem
+                    key={action?.name}
+                    className="hover:bg-slate-100 cursor-pointer"
+                    onClick={action?.action}
+                  >
+                    <div className="flex items-center gap-2">
+                      {action?.icon}
+                      <span className={action?.className}>{action?.name}</span>
+                    </div>
+                  </DropdownMenuItem>
+                </DialogTrigger>
               );
             })}
           </DropdownMenuContent>
@@ -135,10 +133,9 @@ const TagComponent = ({ tags }: { tags?: ITags[] }) => {
 
 interface ITodoProps {
   todo: ITodos;
-  projectId: string;
 }
 
-const Todo = ({ todo, projectId }: ITodoProps) => {
+const Todo = ({ todo }: ITodoProps) => {
   const { id: taskId, title, tags } = todo;
 
   if (!taskId) return null;
@@ -151,7 +148,7 @@ const Todo = ({ todo, projectId }: ITodoProps) => {
           <CircleDotDashedIcon size={16} />
           <span className="text-xs text-slate-500">#{taskId}</span>
         </div>
-        <DropdownButton id={taskId} projectId={projectId} />
+        <DropdownButton key={taskId} id={taskId} />
       </div>
       <div className="my-small">
         <p className="break-all hover:text-blue-600 hover:underline">{title}</p>
@@ -163,17 +160,16 @@ const Todo = ({ todo, projectId }: ITodoProps) => {
 
 interface ITodosProps {
   todos?: ITodos[];
-  projectId: string;
 }
 
-const Todos = ({ todos, projectId }: ITodosProps) => {
+const Todos = ({ todos }: ITodosProps) => {
   if (!todos) return null;
   return (
     <ul className="flex flex-col gap-2 p-small overflow-auto h-full ">
       {todos?.map((todo) => {
         return (
           <li key={todo?.id}>
-            <Todo todo={todo} projectId={projectId} />
+            <Todo todo={todo} />
           </li>
         );
       })}
@@ -183,10 +179,9 @@ const Todos = ({ todos, projectId }: ITodosProps) => {
 
 interface ITabColumnProps {
   data: ITabData;
-  projectId: string;
 }
 
-const TabColumn = ({ data, projectId }: ITabColumnProps) => {
+const TabColumn = ({ data }: ITabColumnProps) => {
   const { id, title, todos } = data;
   const { DialogComponent, onOpen, onClose } = DialogCustom();
 
@@ -214,7 +209,7 @@ const TabColumn = ({ data, projectId }: ITabColumnProps) => {
         />
       </div>
       <div className="h-[700px] w-64 border-default rounded-lg rounded-tl-none rounded-tr-none overflow-auto">
-        <Todos todos={todos} projectId={projectId} />
+        <Todos todos={todos} />
       </div>
     </>
   );
@@ -222,11 +217,11 @@ const TabColumn = ({ data, projectId }: ITabColumnProps) => {
 
 interface ITabColumnsProps {
   data?: ITabData[];
-  projectId: string;
 }
 
-export const TabColumns = ({ data, projectId }: ITabColumnsProps) => {
+export const TabColumns = ({ data }: ITabColumnsProps) => {
   const { onOpen, onClose, DialogComponent } = DialogCustom();
+  const projectId = useContext(ProjectContext);
 
   return (
     <div className="flex items-start gap-6 h-[90%]">
@@ -234,7 +229,7 @@ export const TabColumns = ({ data, projectId }: ITabColumnsProps) => {
         {data?.map((col) => {
           return (
             <li className="flex-shrink-0 h-full" key={col.id}>
-              <TabColumn data={col} projectId={projectId} />
+              <TabColumn data={col} />
             </li>
           );
         })}
