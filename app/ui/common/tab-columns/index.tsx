@@ -2,122 +2,19 @@
 
 import { ITabData, ITags, ITodos } from "@/app/lib/definitions/tab-column";
 import { Badge } from "@/components/ui/badge";
-import {
-  CircleDotDashedIcon,
-  Edit2Icon,
-  EllipsisVerticalIcon,
-  LucideTrash,
-  PlusIcon,
-} from "lucide-react";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import Link from "next/link";
-import { ROUTE_URL } from "@/app/constants/routeStrings";
+import { CircleDotDashedIcon, PlusIcon } from "lucide-react";
+
 import { CreateTaskForm } from "@/app/ui/sprint/projects/form/create-task";
 import DialogCustom, { IDialogProps } from "../dialog";
 import ActionButton from "../button";
-import DeleteTask from "@/app/ui/sprint/projects/form/delete-task";
-import { DialogTrigger } from "@/components/ui/dialog";
 import CreateTab from "@/app/ui/sprint/projects/form/create-tab";
 import { useContext, useMemo, useState } from "react";
-import EditTask from "@/app/ui/sprint/projects/form/edit-task";
 import { ProjectContext } from "@/app/ui/sprint/projects/detail";
 import { TagBg, TagText } from "@/app/constants/tags";
 import { TagsValue } from "@/app/enums/tags";
-import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
+import { ScrollBar } from "@/components/ui/scroll-area";
 import { ScrollAreaStyled, TabColumnContainer } from "./styled";
-
-interface IDropdownButton {
-  id: number;
-}
-
-const DropdownButton = ({ id }: IDropdownButton) => {
-  const { DialogComponent, onClose } = DialogCustom();
-
-  const projectId = useContext(ProjectContext);
-
-  const [dialogData, setDialogData] = useState({
-    header: {
-      title: "Delete task",
-      description: `If you want to delete this task number "${id}", click the Delete button.`,
-    },
-    content: <DeleteTask id={id} onClose={onClose} />,
-  });
-
-  const actions = [
-    {
-      key: 1,
-      name: "Edit",
-      className: "",
-      icon: <Edit2Icon size={13} />,
-      action: () => {
-        setDialogData({
-          header: {
-            title: "Edit task",
-            description: `If you want to edit this task number "${id}", click the Edit button.`,
-          },
-          content: <EditTask id={id} projectId={projectId} onClose={onClose} />,
-        });
-      },
-    },
-    {
-      key: 2,
-      name: "Delete",
-      className: "text-[red]",
-      icon: <LucideTrash size={13} stroke="red" />,
-      action: () => {
-        setDialogData({
-          header: {
-            title: "Delete task",
-            description: `If you want to delete this task number "${id}", click the Delete button.`,
-          },
-          content: <DeleteTask id={id} onClose={onClose} />,
-        });
-      },
-    },
-  ];
-
-  return (
-    <DialogComponent
-      dialogHeader={dialogData?.header}
-      content={<div>{dialogData?.content}</div>}
-      context={
-        <DropdownMenu>
-          <DropdownMenuTrigger className="outline-none">
-            <EllipsisVerticalIcon size={16} />
-          </DropdownMenuTrigger>
-          <DropdownMenuContent>
-            <DropdownMenuLabel>Options</DropdownMenuLabel>
-            <DropdownMenuSeparator />
-
-            {actions?.map((action) => {
-              return (
-                <DialogTrigger key={action?.key} asChild>
-                  <DropdownMenuItem
-                    key={action?.name}
-                    className="hover:bg-slate-100 cursor-pointer"
-                    onClick={action?.action}
-                  >
-                    <div className="flex items-center gap-2">
-                      {action?.icon}
-                      <span className={action?.className}>{action?.name}</span>
-                    </div>
-                  </DropdownMenuItem>
-                </DialogTrigger>
-              );
-            })}
-          </DropdownMenuContent>
-        </DropdownMenu>
-      }
-    />
-  );
-};
+import ActionDropdown from "./ActionDropdown";
 
 const TagComponent = ({ tags }: { tags?: ITags[] }) => {
   if (!tags) return null;
@@ -125,7 +22,6 @@ const TagComponent = ({ tags }: { tags?: ITags[] }) => {
   return (
     <ul className="TagsUnorderedList flex gap-1 flex-wrap">
       {tags?.map(({ id, value }: ITags) => {
-        // if (!id || !value) return null;
         return (
           <li className="TagsList" key={id}>
             <Badge
@@ -160,7 +56,7 @@ const Todo = ({ todo }: ITodoProps) => {
           <CircleDotDashedIcon size={16} />
           <span className="text-xs text-slate-500">#{taskId}</span>
         </div>
-        <DropdownButton key={taskId} id={taskId} />
+        <ActionDropdown key={taskId} id={taskId} />
       </div>
       <div className="TodosTitle my-small">
         <p className="break-all hover:text-blue-600 hover:underline">{title}</p>
@@ -234,7 +130,7 @@ interface ITabColumnsProps {
 
 export const TabColumns = ({ data }: ITabColumnsProps) => {
   const { onOpen, onClose, DialogComponent } = DialogCustom();
-  const projectId = useContext(ProjectContext);
+  const contextData = useContext(ProjectContext);
 
   return (
     <TabColumnContainer className="TabColumnsContainer pl-layout pr-layout">
@@ -256,7 +152,7 @@ export const TabColumns = ({ data }: ITabColumnsProps) => {
           title: "Create task",
           description: `Create a task here. Click create when you're done.`,
         }}
-        content={<CreateTab id={projectId} onClose={onClose} />}
+        content={<CreateTab id={contextData?.projectId} onClose={onClose} />}
       />
     </TabColumnContainer>
   );

@@ -3,6 +3,8 @@
 import { sql } from "@vercel/postgres";
 import {
   ITabData,
+  ITabLabelsData,
+  ITabLabelsResponse,
   ITabProjectData,
   ITags,
   ITodos,
@@ -82,11 +84,25 @@ GROUP BY tab_columns.id, tab_columns.title, projects.id, projects.name; -- Group
       result: data.rows,
       project: title.rows[0],
     };
-    // return data.rows;
   } catch (error) {
     console.error("Database Error: GET project", error);
   }
 }
+
+export async function GetTabLabels(id: string) {
+  try {
+    const data = await sql<ITabLabelsData>`
+    SELECT id, title, project_id FROM tab_columns WHERE project_id = ${id}
+    `;
+
+    return {
+      result: data.rows,
+    };
+  } catch (error) {
+    console.error("Database Error: GET labels", error);
+  }
+}
+
 // export async function GetTodo(id: number) {
 //   try {
 //     const data = await sql<ITodos>`

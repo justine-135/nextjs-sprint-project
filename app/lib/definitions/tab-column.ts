@@ -32,3 +32,13 @@ export interface SeedTabColumns {
   id: number;
   title: string;
 }
+
+export interface ITabLabelsData {
+  id: number;
+  title: string;
+  project_id: string;
+}
+
+export interface ITabLabelsResponse {
+  result: ITabLabelsData[];
+}

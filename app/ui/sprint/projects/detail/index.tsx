@@ -1,31 +1,38 @@
 "use client";
 
-import { ITodosResponse } from "@/app/lib/definitions/tab-column";
+import {
+  ITabLabelsResponse,
+  ITodosResponse,
+} from "@/app/lib/definitions/tab-column";
 import BackButton from "@/app/ui/common/button/backButton";
 import { TabColumns } from "@/app/ui/common/tab-columns";
 import { Toaster } from "@/components/ui/toaster";
 import { createContext } from "react";
-import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
+import { ScrollBar } from "@/components/ui/scroll-area";
 import { ScrollAreaStyled } from "./styled";
-// import * as ScrollArea from "@radix-ui/react-scroll-area";
 
 interface IProjectComponentProps {
   data?: ITodosResponse;
+  tabLabelsData?: ITabLabelsResponse;
   projectId: string;
 }
 
-export const ProjectContext = createContext<string>("");
+interface IProjectContext {
+  projectId: string;
+  tabLabelsData: ITabLabelsResponse | undefined;
+}
 
-const tags = Array.from({ length: 50 }).map(
-  (_, i, a) => `v1.2.0-beta.${a.length - i}`
-);
+export const ProjectContext = createContext<IProjectContext | null>(null);
 
 export default function ProjectComponent({
   data,
+  tabLabelsData,
   projectId,
 }: IProjectComponentProps) {
+  console.log(tabLabelsData);
+
   return (
-    <ProjectContext.Provider value={projectId}>
+    <ProjectContext.Provider value={{ projectId, tabLabelsData }}>
       <div className="PageHeader flex items-center gap-2 pl-layout pr-layout">
         <BackButton href="/sprint" />
         <h1 className="font-semibold text-xl">{data?.project?.name}</h1>
