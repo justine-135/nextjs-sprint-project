@@ -113,18 +113,22 @@ const TodoTags = [
   {
     todo_id: 1,
     tag_id: 1,
+    value: 1,
   },
   {
     todo_id: 1,
     tag_id: 2,
+    value: 2,
   },
   {
     todo_id: 1,
     tag_id: 3,
+    value: 3,
   },
   {
     todo_id: 2,
     tag_id: 3,
+    value: 4,
   },
 ];
 

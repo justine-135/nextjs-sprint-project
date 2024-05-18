@@ -14,7 +14,6 @@ export default function DeleteTask({ id, onClose }: IDeleteTaskProps) {
   const onDelete = async () => {
     if (!id) return null;
 
-    console.log("click");
     startLoading();
 
     try {

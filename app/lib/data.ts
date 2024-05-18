@@ -30,25 +30,15 @@ export async function getTabColumns() {
   }
 }
 
-export async function getTags(id: number) {
-  try {
-    const data = await sql<ITags>`SELECT * FROM tags WHERE id = ${id};`;
+// export async function getTags(id: number) {
+//   try {
+//     const data = await sql<ITags>`SELECT * FROM tags WHERE id = ${id};`;
 
-    return data.rows[0];
-  } catch (error) {
-    console.error("Database Error: GET todos", error);
-  }
-}
-
-export async function getAllTags() {
-  try {
-    const data = await sql<ITags>`SELECT * FROM tags;`;
-
-    return data.rows;
-  } catch (error) {
-    console.error("Database Error: GET todos", error);
-  }
-}
+//     return data.rows[0];
+//   } catch (error) {
+//     console.error("Database Error: GET todos", error);
+//   }
+// }
 
 export async function GetProject(
   id: string
@@ -66,13 +56,11 @@ export async function GetProject(
             'tags', (
                 SELECT json_agg(
                     json_build_object(
-                        'id', tags.id,
-                        'type', tags.type,
-                        'text', tags.text
+                        'id', todo_tag.id,
+                        'value', todo_tag.value
                     )
                 ) 
                 FROM todo_tag
-                LEFT JOIN tags ON todo_tag.tag_id = tags.id
                 WHERE todo_tag.todo_id = todos.id
             )
         ) ORDER BY todos.id ASC
@@ -96,33 +84,31 @@ GROUP BY tab_columns.id, tab_columns.title, projects.id, projects.name; -- Group
     };
     // return data.rows;
   } catch (error) {
-    console.error("Database Error: GET todos", error);
+    console.error("Database Error: GET project", error);
   }
 }
-export async function getTodo(id: number) {
-  try {
-    const data = await sql<ITodos>`
-    SELECT 
-      todos.id,
-      todos.tab_id,
-      todos.title,
-      todos.content,
-      json_agg(
-          json_build_object(
-              'id', tags.id,
-              'type', tags.type,
-              'text', tags.text
-          )
-      ) AS tags
-    FROM todos 
-    LEFT JOIN todo_tag ON todos.id = todo_tag.todo_id
-    LEFT JOIN tags ON todo_tag.tag_id = tags.id
-    WHERE todos.id = ${id}
-    GROUP BY todos.id, todos.tab_id, todos.title, todos.content;
-    `;
+// export async function GetTodo(id: number) {
+//   try {
+//     const data = await sql<ITodos>`
+//     SELECT
+//       todos.id,
+//       todos.tab_id,
+//       todos.title,
+//       todos.content,
+//       json_agg(
+//           json_build_object(
+//               'id', tags.id,
+//               'value', tags.value,
+//           )
+//       ) AS tags
+//     FROM todos
+//     LEFT JOIN todo_tag ON todos.id = todo_tag.todo_id
+//     WHERE todos.id = ${id}
+//     GROUP BY todos.id, todos.tab_id, todos.title, todos.content;
+//     `;
 
-    return data.rows[0];
-  } catch (error) {
-    console.error("Database Error: GET todo", error);
-  }
-}
+//     return data.rows[0];
+//   } catch (error) {
+//     console.error("Database Error: GET todo", error);
+//   }
+// }

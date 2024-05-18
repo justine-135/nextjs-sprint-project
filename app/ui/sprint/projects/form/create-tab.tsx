@@ -27,8 +27,6 @@ export default function CreateTabForm({ id, onClose }: ICreateTabForm) {
   const onSubmit = async () => {
     startLoading();
 
-    console.log(form.getValues());
-
     const payload = form.getValues();
 
     CreateTab(payload)

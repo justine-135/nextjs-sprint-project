@@ -22,6 +22,8 @@ import { usePathname } from "next/navigation";
 import ActionButton from "@/app/ui/common/button";
 import FormItemText from "@/app/ui/common/form-item/input";
 import FormItemTextArea from "@/app/ui/common/form-item/textarea";
+import { TagBg, TagText } from "@/app/constants/tags";
+import { TagsValue } from "@/app/enums/tags";
 
 interface ICreateTaskForm {
   tabId?: number;
@@ -62,17 +64,9 @@ export const CreateTaskForm = ({
   const onSubmit = async () => {
     startLoading();
 
-    const tagIds = selectedTags.map((str) => {
-      const [firstCharacter] = str.split(",");
-      const data = firstCharacter;
-      return {
-        todoId: Number(data),
-      };
-    });
-
     const payload = {
       ...form.getValues(),
-      tagIds: tagIds || [],
+      tagIds: selectedTags || [],
       tabId,
       project_id: projectId,
     };
@@ -124,12 +118,17 @@ export const CreateTaskForm = ({
             />
             <div className="flex gap-1">
               <ul className="flex gap-1">
-                {selectedTags?.map((tag, key) => {
-                  const name = tag.split(TAG_SEPARATOR)[1];
+                {selectedTags?.map((value, key) => {
                   return (
                     <li key={key}>
-                      <Badge className="flex gap-1 items-center">
-                        {name} <X onClick={() => onTagRemove(tag)} size={13} />
+                      <Badge
+                        className={`flex gap-1 items-center ${
+                          TagBg[value as unknown as TagsValue]
+                        }`}
+                        variant="outline"
+                      >
+                        {TagText[value as unknown as TagsValue]}
+                        <X onClick={() => onTagRemove(value)} size={13} />
                       </Badge>
                     </li>
                   );
@@ -138,7 +137,7 @@ export const CreateTaskForm = ({
               <SelectTags onTagSelect={onTagSelect} />
             </div>
           </div>
-          <div className="flex">
+          <div className="flex mt-2">
             <div className="ml-auto">
               <ActionButton type="submit" loading={isLoading}>
                 Add

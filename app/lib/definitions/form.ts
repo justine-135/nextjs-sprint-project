@@ -2,6 +2,6 @@ export interface ICreateTodoForm {
   project_id: string;
   content?: string;
   title?: string;
-  tagIds?: { todoId: number }[];
+  tagIds?: string[];
   tabId?: number | string | null;
 }

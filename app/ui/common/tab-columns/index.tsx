@@ -28,6 +28,10 @@ import CreateTab from "@/app/ui/sprint/projects/form/create-tab";
 import { useContext, useMemo, useState } from "react";
 import EditTask from "@/app/ui/sprint/projects/form/edit-task";
 import { ProjectContext } from "@/app/ui/sprint/projects/detail";
+import { TagBg, TagText } from "@/app/constants/tags";
+import { TagsValue } from "@/app/enums/tags";
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
+import { ScrollAreaStyled, TabColumnContainer } from "./styled";
 
 interface IDropdownButton {
   id: number;
@@ -117,13 +121,21 @@ const DropdownButton = ({ id }: IDropdownButton) => {
 
 const TagComponent = ({ tags }: { tags?: ITags[] }) => {
   if (!tags) return null;
+
   return (
-    <ul className="flex gap-1 flex-wrap">
-      {tags?.map(({ id, text }: ITags) => {
-        if (!id || !text) return null;
+    <ul className="TagsUnorderedList flex gap-1 flex-wrap">
+      {tags?.map(({ id, value }: ITags) => {
+        // if (!id || !value) return null;
         return (
-          <li key={id}>
-            <Badge>{text}</Badge>
+          <li className="TagsList" key={id}>
+            <Badge
+              className={`Tag flex gap-1 items-center ${
+                TagBg[value as unknown as TagsValue]
+              }`}
+              variant="outline"
+            >
+              {TagText[value as unknown as TagsValue]}
+            </Badge>
           </li>
         );
       })}
@@ -141,8 +153,8 @@ const Todo = ({ todo }: ITodoProps) => {
   if (!taskId) return null;
 
   return (
-    <div className="p-small border-default rounded-md ">
-      <div className="flex items-center justify-between">
+    <div className="TodosContainer p-small border-default rounded-md ">
+      <div className="TodosId flex items-center justify-between">
         {/* ID, and Option button part */}
         <div className="flex items-center gap-1">
           <CircleDotDashedIcon size={16} />
@@ -150,7 +162,7 @@ const Todo = ({ todo }: ITodoProps) => {
         </div>
         <DropdownButton key={taskId} id={taskId} />
       </div>
-      <div className="my-small">
+      <div className="TodosTitle my-small">
         <p className="break-all hover:text-blue-600 hover:underline">{title}</p>
       </div>
       <TagComponent tags={tags} />
@@ -163,12 +175,12 @@ interface ITodosProps {
 }
 
 const Todos = ({ todos }: ITodosProps) => {
-  if (!todos) return null;
+  if (!todos?.[0]?.id) return <></>;
   return (
-    <ul className="flex flex-col gap-2 p-small overflow-auto h-full ">
+    <ul className="TodosUnorderedList flex flex-col gap-2 p-small">
       {todos?.map((todo) => {
         return (
-          <li key={todo?.id}>
+          <li className="TodosList" key={todo?.id}>
             <Todo todo={todo} />
           </li>
         );
@@ -191,8 +203,8 @@ const TabColumn = ({ data }: ITabColumnProps) => {
   }, [todos]);
 
   return (
-    <>
-      <div className="flex items-center justify-between p-small border-default border-b-0 rounded-lg rounded-bl-none rounded-br-none">
+    <div className="TabColumnContainer h-full">
+      <div className="TabColumnHeading flex items-center justify-between p-small border-default border-b-0 rounded-lg rounded-bl-none rounded-br-none">
         <div className="flex items-center gap-1">
           <p className="font-semibold">{title}</p>
           <Badge>{todosCount}</Badge>
@@ -208,10 +220,11 @@ const TabColumn = ({ data }: ITabColumnProps) => {
           content={<CreateTaskForm tabId={id} handleCloseDialog={onClose} />}
         />
       </div>
-      <div className="h-[700px] w-64 border-default rounded-lg rounded-tl-none rounded-tr-none overflow-auto">
+      <ScrollAreaStyled className="ScrollArea w-64 border-default rounded-lg rounded-tl-none rounded-tr-none">
         <Todos todos={todos} />
-      </div>
-    </>
+        <ScrollBar className="w-2" orientation="vertical" />
+      </ScrollAreaStyled>
+    </div>
   );
 };
 
@@ -224,11 +237,11 @@ export const TabColumns = ({ data }: ITabColumnsProps) => {
   const projectId = useContext(ProjectContext);
 
   return (
-    <div className="flex items-start gap-6 h-[90%]">
-      <ul className="flex gap-6 h-full overflow-x">
+    <TabColumnContainer className="TabColumnsContainer pl-layout pr-layout">
+      <ul className="TabColumnsUnorderedList flex gap-6 h-full">
         {data?.map((col) => {
           return (
-            <li className="flex-shrink-0 h-full" key={col.id}>
+            <li className="TabColumnList" key={col.id}>
               <TabColumn data={col} />
             </li>
           );
@@ -245,6 +258,6 @@ export const TabColumns = ({ data }: ITabColumnsProps) => {
         }}
         content={<CreateTab id={projectId} onClose={onClose} />}
       />
-    </div>
+    </TabColumnContainer>
   );
 };

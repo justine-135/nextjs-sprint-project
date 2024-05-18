@@ -4,41 +4,30 @@ import {
   SelectContent,
   SelectItem,
 } from "@/components/ui/select";
-import React, { useEffect, useState } from "react";
-import { getAllTags } from "@/app/lib/data";
-import { ITags } from "@/app/lib/definitions/tab-column";
+import React from "react";
+import { TagsValue } from "@/app/enums/tags";
+import { TagText, TagBg } from "@/app/constants/tags";
 
 export const SelectTags = ({
   onTagSelect,
 }: {
   onTagSelect: (value: string) => void;
 }) => {
-  const [tags, setTags] = useState<ITags[]>([]);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      const data = await getAllTags();
-      if (data) {
-        const parsedTags = data?.map(({ id, text, type }) => ({
-          id,
-          text,
-          type,
-        }));
-        setTags(parsedTags);
-      }
-    };
-
-    fetchData();
-  }, []); // empty dependency array to run only once on component mount
+  const tags = Object.keys(TagText);
 
   return (
-    <Select onValueChange={onTagSelect} defaultValue="Tag 1">
-      <SelectTrigger className="w-auto">Select tag</SelectTrigger>
+    <Select onValueChange={onTagSelect}>
+      <SelectTrigger className="w-auto h-[22px]">Select tag</SelectTrigger>
       <SelectContent>
         <ul>
-          {tags?.map(({ id, text, type }) => (
-            <li key={id}>
-              <SelectItem value={`${id},${text},${type}`}>{text}</SelectItem>
+          {tags?.map((value) => (
+            <li key={value}>
+              <SelectItem
+                value={value}
+                textValue={TagText[value as unknown as TagsValue]}
+              >
+                {TagText[value as unknown as TagsValue]}
+              </SelectItem>
             </li>
           ))}
         </ul>

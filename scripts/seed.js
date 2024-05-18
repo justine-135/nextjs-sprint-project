@@ -42,44 +42,7 @@ async function seedProjects(client) {
       tabColumns: insertProjects,
     };
   } catch (error) {
-    console.error("Error seeding todo tag:", error);
-    throw error;
-  }
-}
-
-async function seedTags(client) {
-  try {
-    await client.sql`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`;
-    const createTable = await client.sql`
-        CREATE TABLE IF NOT EXISTS tags (
-          id SERIAL PRIMARY KEY,
-          type INT,
-          text VARCHAR(255) NOT NULL,
-          created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-          updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-        );
-      `;
-
-    console.log(`Created "tags" table`);
-
-    const insertTags = await Promise.all(
-      Tags.map(async (tab) => {
-        return client.sql`
-          INSERT INTO tags (type, text)
-          VALUES (${tab.type}, ${tab.text})
-          ON CONFLICT (id) DO NOTHING;
-        `;
-      })
-    );
-
-    console.log(`Seeded ${insertTags.length} tags`);
-
-    return {
-      createTable,
-      tabColumns: insertTags,
-    };
-  } catch (error) {
-    console.error("Error seeding tab columns:", error);
+    console.error("Error seeding projects:", error);
     throw error;
   }
 }
@@ -173,7 +136,7 @@ async function seedTodoTags(client) {
     CREATE TABLE IF NOT EXISTS todo_tag (
       id SERIAL PRIMARY KEY,
       todo_id INTEGER REFERENCES todos (id) ON DELETE CASCADE,
-      tag_id INTEGER REFERENCES tags (id) ON DELETE CASCADE,
+      value INTEGER,
       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
       updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
   );  
@@ -185,8 +148,8 @@ async function seedTodoTags(client) {
     const insertTodoTag = await Promise.all(
       TodoTags.map(async (tab) => {
         return client.sql`
-          INSERT INTO todo_tag (todo_id, tag_id)
-          VALUES (${tab.todo_id}, ${tab.tag_id})
+          INSERT INTO todo_tag (todo_id, value)
+          VALUES (${tab.todo_id}, ${tab.value})
           ON CONFLICT (id) DO NOTHING;
         `;
       })
@@ -248,7 +211,6 @@ async function main() {
   const client = await db.connect();
 
   await seedProjects(client);
-  await seedTags(client);
   await seedTab(client);
   await seedTodos(client);
   await seedTodoTags(client);

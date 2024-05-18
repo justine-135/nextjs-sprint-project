@@ -49,8 +49,8 @@ export async function CreateTodo(payload: ICreateTodoForm) {
       const insertTodoTagQuery = await Promise.all(
         tagIds.map(async (tagId) => {
           await sql`
-            INSERT INTO todo_tag (todo_id, tag_id)
-            VALUES (${returnedTodoId}, ${tagId.todoId})
+            INSERT INTO todo_tag (todo_id, value)
+            VALUES (${returnedTodoId}, ${tagId})
             RETURNING *;
           `;
         })

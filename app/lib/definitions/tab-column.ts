@@ -1,9 +1,6 @@
-import { QueryResultRow } from "pg";
-
 export interface ITags {
   id: number;
-  type: number;
-  text: string;
+  value: number;
 }
 
 export interface ITodos {
