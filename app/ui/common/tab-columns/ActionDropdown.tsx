@@ -1,6 +1,6 @@
 "use client";
 
-import DialogCustom from "../dialog";
+import DialogCustom, { IDialogHeader } from "../dialog";
 import { EActionDropdown } from "@/app/enums/todo";
 import {
   Command,
@@ -23,7 +23,14 @@ import {
   DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { useContext, useState } from "react";
+import {
+  Dispatch,
+  ReactElement,
+  SetStateAction,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 import DeleteTask from "@/app/ui/sprint/projects/form/delete-task";
 import { ProjectContext } from "@/app/ui/sprint/projects/detail";
 import {
@@ -33,21 +40,33 @@ import {
   LucideEdit,
   LucideTrash,
 } from "lucide-react";
+import EditTask from "@/app/ui/sprint/projects/form/edit-task";
 
+export interface IStatusDataState {
+  id?: number;
+  title?: string;
+}
 interface IDropdownButton {
   id: number;
 }
 
+interface IStatusLabelData {
+  title?: string;
+  id?: number;
+}
+
+interface IDialogData {
+  header: IDialogHeader;
+  statusLabelData?: IStatusLabelData;
+  content?: JSX.Element;
+}
+
 export default function ActionDropdown({ id }: IDropdownButton) {
+  const todoId = id;
+
   const { DialogComponent, onOpen, onClose } = DialogCustom();
 
-  const [dialogData, setDialogData] = useState({
-    header: {
-      title: "Delete task",
-      description: `If you want to delete this task number "${id}", click the Delete button.`,
-    },
-    content: <DeleteTask id={id} onClose={onClose} />,
-  });
+  const [dialogData, setDialogData] = useState<IDialogData>();
 
   const contextData = useContext(ProjectContext);
 
@@ -58,7 +77,6 @@ export default function ActionDropdown({ id }: IDropdownButton) {
     };
   });
 
-  console.log(statusLabels);
   const actions = [
     {
       key: 1,
@@ -66,6 +84,33 @@ export default function ActionDropdown({ id }: IDropdownButton) {
       name: "Set status",
       className: "SetStatusItem",
       icon: <LucideEdit size={13} />,
+      action: ({ id, title }: IStatusLabelData = {}) => {
+        onOpen();
+        setDialogData({
+          header: {
+            title: "Set label",
+            description: (
+              <span>
+                If you want to set this task number {id} to{" "}
+                <span className="font-bold">{title}</span>, click the Set
+                button.
+              </span>
+            ),
+          },
+          statusLabelData: {
+            id,
+            title,
+          },
+          content: (
+            <EditTask
+              todoId={todoId}
+              statusId={id}
+              title={title}
+              onClose={onClose}
+            />
+          ),
+        });
+      },
     },
     {
       key: 2,
@@ -78,9 +123,9 @@ export default function ActionDropdown({ id }: IDropdownButton) {
         setDialogData({
           header: {
             title: "Delete task",
-            description: `If you want to delete this task number "${id}", click the Delete button.`,
+            description: `If you want to delete this task number "${todoId}", click the Delete button.`,
           },
-          content: <DeleteTask id={id} onClose={onClose} />,
+          content: <DeleteTask id={todoId} onClose={onClose} />,
         });
       },
     },
@@ -111,12 +156,10 @@ export default function ActionDropdown({ id }: IDropdownButton) {
                         </span>
                       </div>
                     </DropdownMenuSubTrigger>
-
-                    {/* <DropdownMenuPortal> */}
                     <DropdownMenuSubContent className="p-0">
                       <Command>
                         <CommandInput
-                          placeholder="Filter label..."
+                          placeholder="Filter status ..."
                           autoFocus={true}
                           className="h-9"
                         />
@@ -126,11 +169,13 @@ export default function ActionDropdown({ id }: IDropdownButton) {
                             {statusLabels?.map((label) => (
                               <CommandItem
                                 key={label?.id}
-                                value={label?.title}
-                                // onSelect={(value) => {
-                                //   setLabel(value);
-                                //   setOpen(false);
-                                // }}
+                                value={String(label?.id)}
+                                onSelect={(value) => {
+                                  action?.action({
+                                    id: label.id,
+                                    title: label.title,
+                                  });
+                                }}
                               >
                                 {label?.title}
                               </CommandItem>
@@ -147,7 +192,7 @@ export default function ActionDropdown({ id }: IDropdownButton) {
                   <DropdownMenuItem
                     key={action?.key}
                     className="hover:bg-slate-100 cursor-pointer"
-                    onClick={action?.action}
+                    onClick={() => action?.action()}
                   >
                     <div className="flex items-center gap-2">
                       {action?.icon}

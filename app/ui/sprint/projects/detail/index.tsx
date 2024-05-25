@@ -29,8 +29,6 @@ export default function ProjectComponent({
   tabLabelsData,
   projectId,
 }: IProjectComponentProps) {
-  console.log(tabLabelsData);
-
   return (
     <ProjectContext.Provider value={{ projectId, tabLabelsData }}>
       <div className="PageHeader flex items-center gap-2 pl-layout pr-layout">

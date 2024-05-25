@@ -1,26 +1,37 @@
-import useLoading from "@/app/lib/hooks/useLoading";
+import { UpdateTodoStatus } from "@/app/lib/actions/queries";
+import { useSubmit } from "@/app/lib/hooks/useSubmit";
 import ActionButton from "@/app/ui/common/button";
-import { Select } from "@/components/ui/select";
 import React from "react";
 
 interface IEditTaskProps {
-  id: number;
-  projectId: string;
+  todoId?: number;
+  statusId?: number;
+  title?: string;
   onClose: () => void;
 }
 
-export default function EditTask({ id, projectId, onClose }: IEditTaskProps) {
-  const { isLoading } = useLoading();
+export default function EditTask({
+  todoId,
+  statusId,
+  title,
+  onClose,
+}: IEditTaskProps) {
+  const { isLoading, onFinish } = useSubmit({
+    trigger: UpdateTodoStatus,
+    successMessage: `Task id ${todoId} has been changed to ${title}`,
+    onSuccess: onClose,
+  });
+
+  const onSetLabel = async () => {
+    onFinish({ todoId, statusId });
+  };
 
   return (
     <>
-      <div>
-        <Select></Select>
-      </div>
       <div className="flex">
         <div className="ml-auto">
-          <ActionButton onClick={onClose} loading={isLoading}>
-            Edit
+          <ActionButton onClick={onSetLabel} loading={isLoading}>
+            Set to {title}
           </ActionButton>
         </div>
       </div>

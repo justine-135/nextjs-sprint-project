@@ -5,11 +5,11 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { ReactNode, useState } from "react";
+import { ReactElement, ReactNode, useState } from "react";
 
-interface IDialogHeader {
+export interface IDialogHeader {
   title?: string;
-  description?: string;
+  description?: string | ReactElement;
 }
 
 export interface IDialogProps {

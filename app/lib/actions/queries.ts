@@ -59,6 +59,10 @@ export async function CreateTodo(payload: ICreateTodoForm) {
     }
 
     revalidatePath("/sprint");
+    return {
+      message: "Both todo and tags inserted successfully.",
+      success: true,
+    };
   } catch (error) {
     // Check if both todo and tags are inserted successfully
     console.error("Error inserting data:", error); // Log error
@@ -67,26 +71,13 @@ export async function CreateTodo(payload: ICreateTodoForm) {
       type: 0,
     };
   }
-
-  if (todoInserted && tagsInserted) {
-    return {
-      message: "Both todo and tags inserted successfully.",
-      type: 1,
-    };
-  } else if (todoInserted && !tagsInserted) {
-    return {
-      message: "Todo inserted successfully, but tags insertion failed.",
-      type: 2,
-    };
-  } else {
-    return {
-      message: "Failed.",
-      type: 0,
-    };
-  }
 }
 
-export async function DeleteTodo(id: number) {
+interface IDeleteTodoProps {
+  id: number;
+}
+
+export async function DeleteTodo({ id }: IDeleteTodoProps) {
   try {
     await sql`
       DELETE FROM todos WHERE id = ${id};
@@ -96,7 +87,7 @@ export async function DeleteTodo(id: number) {
 
     return {
       message: "Success",
-      success: 1,
+      success: true,
     };
   } catch (error) {
     console.error("Error deleting data:", error); // Log error
@@ -155,12 +146,12 @@ export async function CreateTab({ project_id, title }: ICreateTabProps) {
     revalidatePath("/sprint");
 
     return {
-      success: 1,
+      success: true,
       message: "Success",
     };
   } catch (error) {
     return {
-      success: 0,
+      success: false,
       message: "Failed",
     };
   }
@@ -200,12 +191,40 @@ export async function CreateProject({
     revalidatePath("/sprint");
 
     return {
-      success: 1,
+      success: true,
       message: "Success",
     };
   } catch (error) {
     return {
-      success: 0,
+      success: false,
+      message: "Failed",
+    };
+  }
+}
+
+interface IUpdateTodoStatusProps {
+  todoId?: number;
+  statusId?: number;
+}
+
+export async function UpdateTodoStatus({
+  todoId,
+  statusId,
+}: IUpdateTodoStatusProps) {
+  console.log(todoId, statusId);
+  try {
+    await sql`
+    UPDATE todos SET tab_id = ${statusId} WHERE id = ${todoId}`;
+
+    revalidatePath("/sprint");
+
+    return {
+      success: true,
+      message: "Success",
+    };
+  } catch (error) {
+    return {
+      success: false,
       message: "Failed",
     };
   }

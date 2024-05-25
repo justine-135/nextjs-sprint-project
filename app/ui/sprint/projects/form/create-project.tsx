@@ -5,8 +5,7 @@ import { useForm, UseFormReturn } from "react-hook-form";
 import FormItemText from "@/app/ui/common/form-item/input";
 import FormItemTextArea from "@/app/ui/common/form-item/textarea";
 import { CreateProject } from "@/app/lib/actions/queries";
-import useLoading from "@/app/lib/hooks/useLoading";
-import { useToast } from "@/components/ui/use-toast";
+import { useSubmit } from "@/app/lib/hooks/useSubmit";
 
 interface ICreateProjectFormProps {
   handleCloseDialog: () => void;
@@ -27,34 +26,14 @@ export default function CreateProjectForm({
     },
   });
 
-  const { toast } = useToast();
-
-  const { isLoading, startLoading, stopLoading } = useLoading();
+  const { isLoading, onFinish } = useSubmit({
+    trigger: CreateProject,
+    successMessage: `New project has been created successfully.`,
+    onSuccess: handleCloseDialog,
+  });
 
   const onSubmit = (data: IFormParams) => {
-    startLoading();
-
-    CreateProject(data)
-      .then((success) => {
-        form.reset();
-        if (success)
-          toast({
-            title: "Project created!",
-            description: "New project has been created successfully.",
-          });
-      })
-      .catch((error) => {
-        if (error)
-          toast({
-            variant: "destructive",
-            title: "Something went wrong!",
-            description: "Project is not created.",
-          });
-      })
-      .finally(() => {
-        stopLoading();
-        if (!isLoading) handleCloseDialog();
-      });
+    onFinish(data);
   };
 
   return (

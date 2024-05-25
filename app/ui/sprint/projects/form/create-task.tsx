@@ -24,6 +24,7 @@ import FormItemText from "@/app/ui/common/form-item/input";
 import FormItemTextArea from "@/app/ui/common/form-item/textarea";
 import { TagBg, TagText } from "@/app/constants/tags";
 import { TagsValue } from "@/app/enums/tags";
+import { useSubmit } from "@/app/lib/hooks/useSubmit";
 
 interface ICreateTaskForm {
   tabId?: number;
@@ -47,8 +48,11 @@ export const CreateTaskForm = ({
   });
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
 
-  const { isLoading, startLoading, stopLoading } = useLoading();
-  const { toast } = useToast();
+  const { isLoading, onFinish } = useSubmit({
+    trigger: CreateTodo,
+    successMessage: `New task has been created successfully.`,
+    onSuccess: handleCloseDialog,
+  });
 
   const onTagSelect = (value: string) => {
     // Check if the value already exists in the array
@@ -62,8 +66,6 @@ export const CreateTaskForm = ({
   };
 
   const onSubmit = async () => {
-    startLoading();
-
     const payload = {
       ...form.getValues(),
       tagIds: selectedTags || [],
@@ -71,27 +73,7 @@ export const CreateTaskForm = ({
       project_id: projectId,
     };
 
-    CreateTodo(payload)
-      .then((success) => {
-        form.reset();
-        if (success)
-          toast({
-            title: "Task created!",
-            description: "New task has been created successfully.",
-          });
-      })
-      .catch((error) => {
-        if (error)
-          toast({
-            variant: "destructive",
-            title: "Something went wrong!",
-            description: "Your task is not created.",
-          });
-      })
-      .finally(() => {
-        stopLoading();
-        if (!isLoading) handleCloseDialog?.();
-      });
+    onFinish(payload);
   };
 
   return (
